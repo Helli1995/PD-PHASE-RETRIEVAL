@@ -43,11 +43,11 @@ void init_plan(t_init_plan *x)
     int do_causal = x->do_causal_pd;
     post("Causal yes=1, no=0, [do_causal]: %d\n", do_causal);
     
-    phaseret_rtpghi_state_d** sta=NULL;
+    phaseret_rtpghi_state_d* sta=NULL;
     
     //outlet_symbol(x->x_obj.ob_outlet, sta);
     
-    //phaseret_rtpghi_init_d(gamma, W, a, M, tol, do_causal, sta);
+    phaseret_rtpghi_init_d(gamma, W, a, M, tol, do_causal, &sta);
     post("initialised rtpghi plan at adress: %p\n", &sta);
     
     phaseret_rtpghi_done_d(sta);
