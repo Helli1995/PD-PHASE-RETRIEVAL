@@ -1,0 +1,8 @@
+#N canvas 576 103 578 358 12;
+#X declare -lib rtpghi;
+#X obj 340 46 declare -lib rtpghi;
+#X obj 210 226 dac~;
+#X obj 197 97 osc~ 500;
+#X obj 153 166 rtpghi~ 1 128 512 1e-05 0 hann;
+#X connect 2 0 3 0;
+#X connect 3 0 1 0;
