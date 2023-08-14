@@ -20,8 +20,8 @@ typedef struct _rtpghi_tilde {
     t_float do_causal_pd;
     t_symbol window_type;
     phaseret_rtpghi_state_s* sta_pd;
-    float _Complex* c;     ///
-    float* s;               ///both added because PD crashed when using rtpghi_execute
+    //float _Complex* c;     ///
+    //float* s;               ///both added because PD crashed when using rtpghi_execute
     t_float f;
     
     //t_inlet *x_in2;
@@ -79,9 +79,9 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->sta_pd=NULL;
     
     
-    int N = x->M_pd;
-    x->c=ltfat_calloc_sc(N);
-    x->s=ltfat_calloc_s(N);
+    //int N = x->M_pd;
+    //x->c=ltfat_calloc_sc(N);
+    //x->s=ltfat_calloc_s(N);
     
     ltfat_int M = x->M_pd;
     post("stft_length [M]: %d\n", M);
@@ -121,8 +121,8 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x)
     //phaseret_rtpghi_state_d* sta = x->sta_pd;
     post("destroyed state at adrr: %p\n", &(x->sta_pd));
     phaseret_rtpghi_done_s(&(x->sta_pd));
-    ltfat_free(x->c);
-    ltfat_free(x->s);
+    //ltfat_free(x->c);
+    //ltfat_free(x->s);
     outlet_free(x->x_out);
     outlet_free(x->x_out_1);
     
