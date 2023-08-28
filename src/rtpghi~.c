@@ -61,11 +61,9 @@ t_int *rtpghi_tilde_perform(t_int *w)
 void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 {
     ltfat_int M = x->M_pd;
-    ltfat_int ol = x->ol_pd;
     
     //ltfat_complex_s *c = x->c;
-    post("length of c[]: %d", (M) * sizeof *(x->c) * ol);
-    post("check length of c[]: %d", ((sp[0]->s_n)) * sizeof *(x->c) / 8);
+    post("length of c[]: %d", (M) * sizeof *(x->c));
     post("s_n: %d", sp[0]->s_n);
     
     t_sample **dummy=x->out;
@@ -127,7 +125,7 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
     outlet_new(&x->x_obj, gensym("signal"));
     
     x->out = (t_sample **)getbytes(2 * sizeof(t_sample *));
-    x->c = (ltfat_complex_s *)getbytes(M * (sizeof *(x->c)) * (x->ol_pd));
+    x->c = (ltfat_complex_s *)getbytes(M * (sizeof *(x->c)));
     x->out[0] = 0;
     x->out[1] = 0;
         
@@ -138,11 +136,10 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 void rtpghi_tilde_free(t_rtpghi_tilde *x)
 {
     ltfat_int M = x->M_pd;
-    ltfat_int ol = x-> ol_pd;
     post("destroyed state at adrr: %p\n", &(x->sta_pd));
     phaseret_rtpghi_done_s(&(x->sta_pd));
     post("x->M_pd: %d", M);
-    freebytes(x->c, (M) * sizeof *(x->c) * ol);
+    freebytes(x->c, (M) * sizeof *(x->c));
     freebytes(x->out,2 * sizeof(t_sample *));
 }
 
