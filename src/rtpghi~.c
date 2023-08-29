@@ -22,8 +22,8 @@ typedef struct _rtpghi_tilde {
 	ltfat_complex_s *c;
 
     t_float f;
-    t_outlet out_real;
-    t_outlet out_imag;
+    t_outlet *out_real;
+    t_outlet *out_imag;
    
 } t_rtpghi_tilde;
 
@@ -80,10 +80,6 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     double gamma = phaseret_firwin2gamma(window, M);
     post("window normalization parameter [gamma]: %f\n", gamma);
     
-    ltfat_int W = x->W_pd;
-    post("number of audio channels [W]: %d\n", W);
-    
-    
     ltfat_int a = M/(x->ol_pd);
     post("hopsize: %d\n", a);
     
@@ -95,8 +91,9 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     
     post("%p", (x->sta_pd));
     int init_s = 0;
-    
-    init_s = phaseret_rtpghi_init_s(gamma, 1, a , M, tol, do_causal, &(x->sta_pd));
+	ltfat_int w = 1;
+	
+    init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
     
     //post("%p", (*((x->sta_pd)+4)));
     if (init_s == 0) {
@@ -126,11 +123,12 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->sta_pd=NULL;
     x-> c = NULL;
     
-    outlet_new(&x->x_obj, gensym("signal"));
-    outlet_new(&x->x_obj, gensym("signal"));
+    outlet_new(&x->x_obj, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
     
-    x->out_real = (t_sample *) getbytes(sizeof t_sample *);
-	x->out_imag = (t_sample *) getbytes(sizeof t_sample *);
+    x->out_real = getbytes(sizeof (t_sample *));
+	x->out_imag = getbytes(sizeof (t_sample *));
+	
   return (void *)x;
 }
 
@@ -142,8 +140,8 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x)
 	phaseret_rtpghi_done_s(&(x->sta_pd));
 
 	freebytes(x->c, (M/2+1) * sizeof *(x->c));
-	freebytes(x->out_real, sizeoft_sample*);
-	freebytes(x->out_imag, sizeoft_sample *);
+	freebytes(x->out_real, sizeof (t_sample*));
+	freebytes(x->out_imag, sizeof (t_sample *));
 }
 
 void rtpghi_tilde_setup(void) {
