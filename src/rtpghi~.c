@@ -12,50 +12,50 @@
 static t_class *rtpghi_tilde_class;
 
 typedef struct _rtpghi_tilde {
-   t_object  x_obj;
-   t_float W_pd;
-   t_float ol_pd;
-   t_float M_pd;
-   t_float tol_pd;
-   t_float do_causal_pd;
-   t_symbol window_type;
-   phaseret_rtpghi_state_s* sta_pd;
-   ltfat_complex_s *c;
+	t_object  x_obj;
+	t_float W_pd;
+	t_float ol_pd;
+	t_float M_pd;
+	t_float tol_pd;
+	t_float do_causal_pd;
+	t_symbol window_type;
+	phaseret_rtpghi_state_s* sta_pd;
+	ltfat_complex_s *c;
 
-   t_float f;
-   
-   t_sample **out;
+    t_float f;
+    t_outlet out_real;
+    t_outlet out_imag;
    
 } t_rtpghi_tilde;
 
-t_int *rtpghi_tilde_perform(t_int *w)
-{
-   t_rtpghi_tilde *x = (t_rtpghi_tilde *)(w[1]);
-   const float *s =      (const float*)(w[2]);
-   int            n =             (int)(w[3]);
-   
-   ltfat_complex_s *c = (ltfat_complex_s *) x->c;
-   
-   int e = 0;
-   
-   if ((s==NULL) || ((x->sta_pd)==NULL)) {
-       post("arrays not initialised");
-   }
-   else
-   {
-       e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
-       t_sample *out=(t_sample *) x->out[0];
-       t_sample *out1= (t_sample *) x->out[1];
-       //post("e: %d", e);
-       //post("complex signal: %f + i%f\n",creal(*(c+20)), cimag(*(c+20)));
-       while (n--) {
-           
-           *out = creal(*c);
-           *out1 = cimag(*c++);
-       }
-   }
+t_int *rtpghi_tilde_perform(t_int *w) {
+	
+	t_rtpghi_tilde *x = (t_rtpghi_tilde *)(w[1]);
+	const float *s =      (const float*)(w[2]);
+	int            n =             (int)(w[5]);
 
- return (w+4);
+	ltfat_complex_s *c = (ltfat_complex_s *) x->c;
+
+	int e = 0;
+
+	if ((s==NULL) || ((x->sta_pd)==NULL)) {
+	   post("arrays not initialised");
+	}
+	else
+	{
+	   e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
+	   t_sample *out=(t_sample *) (w[3]);
+		t_sample *out1= (t_sample *) (w[4]);
+	   //post("e: %d", e);
+	   //post("complex signal: %f + i%f\n",creal(*(c+20)), cimag(*(c+20)));
+	   while (n--) {
+		   
+		   *out = creal(*c);
+		   *out1 = cimag(*c++);
+	   }
+	}
+
+ return (w+6);
 }
 
 void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
@@ -99,11 +99,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
    post("length of c[]: %d", (M) * sizeof *(x->c));
    post("s_n: %d", sp[0]->s_n);
    
-   t_sample **dummy=x->out;
-   *dummy++=sp[1]->s_vec;
-   *dummy=sp[2]->s_vec;
-   
-   dsp_add(rtpghi_tilde_perform, 3,x, sp[0]->s_vec, sp[0]->s_n);
+   dsp_add(rtpghi_tilde_perform, 3,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
 }
 
 void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
@@ -124,11 +120,10 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
     outlet_new(&x->x_obj, gensym("signal"));
     outlet_new(&x->x_obj, gensym("signal"));
     
-    x->out = (t_sample **) getbytes(2 * sizeof(t_sample *));
+    x->out_real = (t_sample *) getbytes(sizeof t_sample *);
+	x->out_imag = (t_sample *) getbytes(sizeof t_sample *);
     //x->c = (ltfat_complex_s *) getbytes(M * (sizeof *(x->c)) * (x->ol_pd));
     //x->dummy_buffer = (ltfat_complex_s *) ltfat_malloc_sc((M) * 32);
-    x->out[0] = 0;
-    x->out[1] = 0;
         
   return (void *)x;
 }
@@ -136,12 +131,13 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
 void rtpghi_tilde_free(t_rtpghi_tilde *x)
 {
-   ltfat_int M = x->M_pd;
-   post("destroyed state at adrr: %p\n", &(x->sta_pd));
-   phaseret_rtpghi_done_s(&(x->sta_pd));
-   post("x->M_pd: %d", M);
-   freebytes(x->c, (M) * sizeof *(x->c));
-   freebytes(x->out,2 * sizeof(t_sample *));
+	ltfat_int M = x->M_pd;
+	post("destroyed state at adrr: %p\n", &(x->sta_pd));
+	phaseret_rtpghi_done_s(&(x->sta_pd));
+
+	freebytes(x->c, M * sizeof *(x->c));
+	freebytes(x->out_real, sizeoft_sample*);
+	freebytes(x->out_imag, sizeoft_sample *);
 }
 
 void rtpghi_tilde_setup(void) {
