@@ -115,11 +115,11 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   t_rtpghi_tilde *x = (t_rtpghi_tilde *)pd_new(rtpghi_tilde_class);
 
-    x->ol_pd=atom_getfloat(argv+1);
-    x->M_pd=atom_getfloat(argv+2);
-    x->tol_pd=atom_getfloat(argv+3);
-    x->do_causal_pd=atom_getfloat(argv+4);
-    x->window_type= *atom_getsymbol(argv+5);
+    x->ol_pd=atom_getfloat(argv);
+    x->M_pd=atom_getfloat(argv+1);
+    x->tol_pd=atom_getfloat(argv+2);
+    x->do_causal_pd=atom_getfloat(argv+3);
+    x->window_type= *atom_getsymbol(argv+4);
     x->sta_pd=NULL;
     x-> c = NULL;
     
