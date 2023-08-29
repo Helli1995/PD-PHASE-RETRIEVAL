@@ -13,7 +13,6 @@ static t_class *rtpghi_tilde_class;
 
 typedef struct _rtpghi_tilde {
 	t_object  x_obj;
-	t_float W_pd;
 	t_float ol_pd;
 	t_float M_pd;
 	t_float tol_pd;
@@ -85,7 +84,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     post("%p", (x->sta_pd));
     int init_s = 0;
     
-    init_s = phaseret_rtpghi_init_s(gamma, W, a , M, tol, do_causal, &(x->sta_pd));
+    init_s = phaseret_rtpghi_init_s(gamma, 1, a , M, tol, do_causal, &(x->sta_pd));
     
     //post("%p", (*((x->sta_pd)+4)));
     if (init_s == 0) {
@@ -95,7 +94,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
         post("failed to init, status %d", init_s);
     }
    
-   //ltfat_complex_s *c = x->c;
+   x->c = getbytes(M * sizeof *(x->c));
    post("length of c[]: %d", (M) * sizeof *(x->c));
    post("s_n: %d", sp[0]->s_n);
    
@@ -107,7 +106,6 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   t_rtpghi_tilde *x = (t_rtpghi_tilde *)pd_new(rtpghi_tilde_class);
 
-    x->W_pd=atom_getfloat(argv);
     x->ol_pd=atom_getfloat(argv+1);
     x->M_pd=atom_getfloat(argv+2);
     x->tol_pd=atom_getfloat(argv+3);
@@ -116,15 +114,11 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->sta_pd=NULL;
     x-> c = NULL;
     
-    
     outlet_new(&x->x_obj, gensym("signal"));
     outlet_new(&x->x_obj, gensym("signal"));
     
     x->out_real = (t_sample *) getbytes(sizeof t_sample *);
 	x->out_imag = (t_sample *) getbytes(sizeof t_sample *);
-    //x->c = (ltfat_complex_s *) getbytes(M * (sizeof *(x->c)) * (x->ol_pd));
-    //x->dummy_buffer = (ltfat_complex_s *) ltfat_malloc_sc((M) * 32);
-        
   return (void *)x;
 }
 
