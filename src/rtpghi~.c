@@ -30,7 +30,7 @@ typedef struct _rtpghi_tilde {
 t_int *rtpghi_tilde_perform(t_int *w) {
 	
 	t_rtpghi_tilde *x = (t_rtpghi_tilde *)(w[1]);
-	const float *s =      (const float*)(w[2]);
+	t_sample *s =      (t_sample *) (w[2]);
 	int            n =             (int)(w[5]);
 
 	ltfat_complex_s *c = (ltfat_complex_s *) x->c;
