@@ -42,16 +42,28 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	}
 	else
 	{
-	   e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
-	   t_sample *out=(t_sample *) (w[3]);
+		e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
+		
+		t_sample *out=(t_sample *) (w[3]);
 		t_sample *out1= (t_sample *) (w[4]);
-	   //post("e: %d", e);
-	   //post("complex signal: %f + i%f\n",creal(*(c+20)), cimag(*(c+20)));
-	   while (n--) {
-		   
-		   *out = creal(*c);
-		   *out1 = cimag(*c++);
-	   }
+
+		if (e == 0) {
+			while (n--) {
+				
+				if (n >= (x->M_pd)/2){
+					*out++ = creal(*c);
+					*out1++ = cimag(*c++);
+				}
+				else {
+					
+					*out++ = 0.f;
+					*out1++ = 0.f;
+				}
+			}
+		}
+		else {
+			post("error of type: %d", e);
+		}
 	}
 
  return (w+6);
@@ -95,7 +107,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     }
    
    x->c = getbytes(M * sizeof *(x->c));
-   post("length of c[]: %d", (M) * sizeof *(x->c));
+   post("length of c[]: %d", (M/2+1) * sizeof *(x->c));
    post("s_n: %d", sp[0]->s_n);
    
    dsp_add(rtpghi_tilde_perform, 3,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
@@ -129,7 +141,7 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x)
 	post("destroyed state at adrr: %p\n", &(x->sta_pd));
 	phaseret_rtpghi_done_s(&(x->sta_pd));
 
-	freebytes(x->c, M * sizeof *(x->c));
+	freebytes(x->c, (M/2+1) * sizeof *(x->c));
 	freebytes(x->out_real, sizeoft_sample*);
 	freebytes(x->out_imag, sizeoft_sample *);
 }
