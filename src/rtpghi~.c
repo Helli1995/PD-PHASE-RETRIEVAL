@@ -50,7 +50,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 		if (e == 0) {
 			while (n--) {
 				
-				if (n >= (x->M_pd)/2){
+				if (n >= (x->M_pd)/2-1){
 					*out++ = creal(*c);
 					*out1++ = cimag(*c++);
 				}
