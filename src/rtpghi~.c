@@ -22,8 +22,6 @@ typedef struct _rtpghi_tilde {
 	ltfat_complex_s *c;
 
     t_float f;
-    t_outlet *out_real;
-    t_outlet *out_imag;
    
 } t_rtpghi_tilde;
 
@@ -134,10 +132,7 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
     
     outlet_new(&x->x_obj, &s_signal);
     outlet_new(&x->x_obj, &s_signal);
-    
-    x->out_real = getbytes(sizeof (t_sample *));
-	x->out_imag = getbytes(sizeof (t_sample *));
-	
+
   return (void *)x;
 }
 
@@ -149,8 +144,6 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x)
 	phaseret_rtpghi_done_s(&(x->sta_pd));
 
 	freebytes(x->c, (M/2+1) * sizeof *(x->c));
-	freebytes(x->out_real, sizeof (t_sample*));
-	freebytes(x->out_imag, sizeof (t_sample *));
 }
 
 void rtpghi_tilde_setup(void) {
