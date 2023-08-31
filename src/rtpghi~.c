@@ -88,25 +88,31 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	
 	
 	// Check for existing ltfat_state (to do: implement init only when input param.)
-	int init_s = 0;
+	int init_s;
 	ltfat_int w = 1;
 	
 	if (x->sta_pd == NULL) {
 		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+		if (init_s == 0) {
+			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
+		}
+		else {
+			pd_error(x, "failed to init, status %d", init_s);
+		}
 	}
 	else {
 		
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		phaseret_rtpghi_done_s(&(x->sta_pd));
 		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+		if (init_s == 0) {
+			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
+		}
+		else {
+			pd_error(x, "failed to init, status %d", init_s);
+		}
 	}
 	
-    if (init_s == 0) {
-        post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
-    }
-    else {
-        pd_error(x, "failed to init, status %d", init_s);
-    }
    
    x->c = getbytes(M * sizeof *(x->c));
    post("length of c[]: %d", M * sizeof *(x->c));
@@ -161,7 +167,7 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
 void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
 {
-	if ((x->sta_pd != NULL) && (x->c != NULL)){
+	if (x->sta_pd != NULL){
 		
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		phaseret_rtpghi_done_s(&(x->sta_pd));
