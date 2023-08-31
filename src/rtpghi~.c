@@ -17,7 +17,7 @@ typedef struct _rtpghi_tilde {
 	t_float M_pd;
 	t_float tol_pd;
 	t_float do_causal_pd;
-	t_symbol window_type;
+	t_symbol *window_type_pd;
 	phaseret_rtpghi_state_s* sta_pd;
 	ltfat_complex_s *c;
 
@@ -72,7 +72,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     ltfat_int M = x->M_pd;
     
     post("stft_length [M]: %d\n", M);
-    const char* win=x->window_type.s_name;
+    const char* win=x->window_type_pd->s_name;
     
     LTFAT_FIRWIN window = ltfat_str2firwin(win);
     double gamma = phaseret_firwin2gamma(window, M);
@@ -126,7 +126,7 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->M_pd=atom_getfloat(argv+1);
     x->tol_pd=atom_getfloat(argv+2);
     x->do_causal_pd=atom_getfloat(argv+3);
-    x->window_type= *atom_getsymbol(argv+4);
+    x->window_type_pd= atom_getsymbol(argv+4);
     x->sta_pd=NULL;
     x-> c = NULL;
     
