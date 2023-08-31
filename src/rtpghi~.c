@@ -89,11 +89,20 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     int do_causal = 0;
     post("Causal yes=1, no=0, [do_causal]: %d\n", do_causal);
     
-    post("%p", (x->sta_pd));
     int init_s = 0;
 	ltfat_int w = 1;
 	
-    init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+	// Check for existing ltfat_state (to do: implement init only when input param.)
+	if (x->sta_pd == NULL) {
+		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+	}
+	else {
+		
+		post("destroyed state at adrr: %p\n", &(x->sta_pd));
+		phaseret_rtpghi_done_s(&(x->sta_pd));
+		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+	}
+	
     
     //post("%p", (*((x->sta_pd)+4)));
     if (init_s == 0) {
