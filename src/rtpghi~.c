@@ -38,7 +38,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	int e = 0;
 
 	if ((s==NULL) || ((x->sta_pd)==NULL)) {
-	   post("arrays not initialised");
+	   pd_error(x, "arrays not initialised");
 	}
 	else
 	{
@@ -62,7 +62,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 			}
 		}
 		else {
-			post("error of type: %d", e);
+			pd_error(x, "error of type: %d", e);
 		}
 	}
 
