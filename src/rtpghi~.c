@@ -83,7 +83,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     double tol = x->tol_pd;
     post("Tolerance [tol]: %f\n", tol);
     
-    int do_causal = 0;
+    int do_causal = x->do_causal_pd;
     post("Causal yes=1, no=0, [do_causal]: %d\n", do_causal);
 	
 	
@@ -119,11 +119,35 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
 
   t_rtpghi_tilde *x = (t_rtpghi_tilde *)pd_new(rtpghi_tilde_class);
-
-	x->ol_pd=atom_getfloat(argv);
-	x->tol_pd=atom_getfloat(argv+1);
-	x->do_causal_pd=atom_getfloat(argv+2);
-	x->window_type_pd= atom_getsymbol(argv+3);
+	
+	switch (argc) {				//to do: typechecks and value checks)
+		case 4: default:
+			x->ol_pd=atom_getfloat(argv);
+			x->tol_pd=atom_getfloat(argv+1);
+			x->do_causal_pd=atom_getfloat(argv+2);
+			x->window_type_pd= atom_getsymbol(argv+3);
+		case 3:
+			x->ol_pd=atom_getfloat(argv);
+			x->tol_pd=atom_getfloat(argv+1);
+			x->do_causal_pd=atom_getfloat(argv+2);
+			x->window_type_pd->s_name= "hann";
+		case 2:
+			x->ol_pd=atom_getfloat(argv);
+			x->tol_pd=atom_getfloat(argv+1);
+			x->do_causal_pd=1;
+			x->window_type_pd->s_name= "hann";
+		case 1:
+			x->ol_pd=atom_getfloat(argv);
+			x->tol_pd=0.000001;
+			x->do_causal_pd=1.f;
+			x->window_type_pd->s_name= "hann";
+		case 0:
+			x->ol_pd=1.f;
+			x->tol_pd=0.000001;
+			x->do_causal_pd=1;
+			x->window_type_pd->s_name= "hann";
+	}
+	
     
     x->sta_pd=NULL;
     x-> c = NULL;
@@ -156,3 +180,4 @@ void rtpghi_tilde_setup(void) {
                    (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
    CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
 }
+
