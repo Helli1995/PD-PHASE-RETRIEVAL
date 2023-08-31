@@ -68,6 +68,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 
 void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 {
+	post("start DSP");
     ltfat_int M = (ltfat_int) sp[0]->s_n;
     
     post("stft_length [M]: %d\n", M);
@@ -93,10 +94,12 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	
 	if (x->sta_pd == NULL) {
 		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+		post("failed to init, status %d", init_s);
 		if (init_s == 0) {
 			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
 		}
 		else {
+			post("failed to init, status %d", init_s);
 			pd_error(x, "failed to init, status %d", init_s);
 		}
 	}
@@ -132,29 +135,39 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 			x->tol_pd=atom_getfloat(argv+1);
 			x->do_causal_pd=atom_getfloat(argv+2);
 			x->window_type_pd= atom_getsymbol(argv+3);
+			post("4");
+			break;
 		case 3:
 			x->ol_pd=atom_getfloat(argv);
 			x->tol_pd=atom_getfloat(argv+1);
 			x->do_causal_pd=atom_getfloat(argv+2);
 			x->window_type_pd->s_name= "hann";
+			post("3");
+			break;
 		case 2:
 			x->ol_pd=atom_getfloat(argv);
 			x->tol_pd=atom_getfloat(argv+1);
 			x->do_causal_pd=1;
 			x->window_type_pd->s_name= "hann";
+			post("2");
+			break;
 		case 1:
 			x->ol_pd=atom_getfloat(argv);
 			x->tol_pd=0.000001;
 			x->do_causal_pd=1.f;
 			x->window_type_pd->s_name= "hann";
+			post("1");
+			break;
 		case 0:
 			x->ol_pd=1.f;
 			x->tol_pd=0.000001;
 			x->do_causal_pd=1;
 			x->window_type_pd->s_name= "hann";
+			post("0");
+			break;
 	}
 	
-    
+	post("dummy");
     x->sta_pd=NULL;
     x->c = NULL;
     
