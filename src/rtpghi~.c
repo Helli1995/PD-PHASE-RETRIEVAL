@@ -150,7 +150,7 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 	
     
     x->sta_pd=NULL;
-    x-> c = NULL;
+    x->c = NULL;
     
     outlet_new(&x->x_obj, &s_signal);
     outlet_new(&x->x_obj, &s_signal);
@@ -161,10 +161,12 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
 void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
 {
-	post("destroyed state at adrr: %p\n", &(x->sta_pd));
-	phaseret_rtpghi_done_s(&(x->sta_pd));
-
-	freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
+	if ((x->sta_pd != NULL) && (x->c != NULL)){
+		
+		post("destroyed state at adrr: %p\n", &(x->sta_pd));
+		phaseret_rtpghi_done_s(&(x->sta_pd));
+		freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
+	}
 }
 
 void rtpghi_tilde_setup(void) {
