@@ -39,6 +39,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	if ((s==NULL) || ((x->sta_pd)==NULL)) {
 	   pd_error(x, "arrays not initialised");
 	}
+	
 	else
 	{
 		e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
