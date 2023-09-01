@@ -28,6 +28,8 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	
 	t_rtpghi_tilde *x = (t_rtpghi_tilde *)(w[1]);
 	t_sample *s =      (t_sample *) (w[2]);
+	t_sample *out=(t_sample *) (w[3]);
+	t_sample *out1= (t_sample *) (w[4]);
 	int            n =             (int)(w[5]);
 
 	ltfat_complex_s *c = (ltfat_complex_s *) x->c;
@@ -40,9 +42,6 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	else
 	{
 		e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
-		
-		t_sample *out=(t_sample *) (w[3]);
-		t_sample *out1= (t_sample *) (w[4]);
 
 		if (e == 0) {
 			while (n--) {
@@ -124,10 +123,10 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 		x->c = getbytes(M * sizeof *(x->c));
 	}
 	
-   post("length of c[]: %d", M * sizeof *(x->c));
+   post("length of c[] [bit]: %d", M * sizeof *(x->c));
    post("s_n: %d", sp[0]->s_n);
    
-   dsp_add(rtpghi_tilde_perform, 3,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
+   dsp_add(rtpghi_tilde_perform, 5,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
 }
 
 void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
@@ -175,7 +174,7 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
 }
 
 void rtpghi_tilde_setup(void) {
-
+	
    rtpghi_tilde_class = class_new(gensym("rtpghi~"),
                               (t_newmethod)rtpghi_tilde_new,
                                (t_method)rtpghi_tilde_free,
@@ -183,8 +182,8 @@ void rtpghi_tilde_setup(void) {
                               CLASS_DEFAULT,
                                A_GIMME,
                               0);
+	//to do: add methods to change do_causal_pd, tol_pd on runtime
    class_addmethod(rtpghi_tilde_class,
                    (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
    CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
 }
-
