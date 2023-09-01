@@ -19,8 +19,7 @@ typedef struct _rtpghi_tilde {
 	t_symbol *window_type_pd;
 	phaseret_rtpghi_state_s* sta_pd;
 	ltfat_complex_s *c;
-	int win_def;
-
+	
     t_float f;
    
 } t_rtpghi_tilde;
@@ -73,12 +72,12 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     ltfat_int M = (ltfat_int) sp[0]->s_n;
     
     post("stft_length [M]: %d\n", M);
-	const char* win = x->window_type_pd->s_name;
+	//const char* win = x->window_type_pd->s_name;
 	const char win_[4] = "hann";
 	LTFAT_FIRWIN window;
 	
-	if ((x->win_def) == 1) {
-		window = ltfat_str2firwin(win);
+	if (x->window_type_pd != NULL) {
+		window = ltfat_str2firwin(x->window_type_pd->s_name);
 	}
 	else {
 		window = ltfat_str2firwin(win_);
@@ -97,7 +96,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     post("Causal yes=1, no=0, [do_causal]: %d\n", do_causal);
 	
 	
-	// Check for existing ltfat_state (to do: implement init only when input param.)
+	// Check for existing ltfat_state (to do: implement init only when input param. changes)
 	int init_s;
 	ltfat_int w = 1;
 	
@@ -117,8 +116,14 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 		}
 	}
 	
-   
-   x->c = getbytes(M * sizeof *(x->c));
+	if (x->c != NULL) {
+		freebytes(x->c, M * sizeof *(x->c));
+		x->c = NULL;
+	}
+	if (x->c == NULL) {
+		x->c = getbytes(M * sizeof *(x->c));
+	}
+	
    post("length of c[]: %d", M * sizeof *(x->c));
    post("s_n: %d", sp[0]->s_n);
    
@@ -129,12 +134,14 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
 
   t_rtpghi_tilde *x = (t_rtpghi_tilde *)pd_new(rtpghi_tilde_class);
-	x->win_def = 0;
+	x->window_type_pd = NULL;
+	x->ol_pd = 4.0;
+	x->tol_pd = 0.000001;
+	x->do_causal_pd = 1.0;
 	
 	switch (argc) {				//to do: typechecks and value checks)
 		case 4: default:
 			x->window_type_pd = atom_getsymbol(argv+3);
-			x->win_def = 1;
 		case 3:
 			x->do_causal_pd = atom_getfloat(argv+2);
 		case 2:
@@ -143,17 +150,10 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 			x->ol_pd = atom_getfloat(argv);
 			break;
 		case 0:
-			x->ol_pd = 4.0;
-			x->tol_pd = 0.000001;
-			x->do_causal_pd = 1.0;
-			x->win_def = 0;
 			break;
 	}
-	
-	if (argc == 2) {x->do_causal_pd = 1.f;}
-	else if (argc == 1) {x->do_causal_pd = 1.f; x->tol_pd = 0.000001;}
-	
-	post("win_def %d, do_causal %f, tol %f, ol %f", x->win_def, x->do_causal_pd, x->tol_pd, x->ol_pd);
+
+	post("win_def %p, do_causal %f, tol %f, ol %f", x->window_type_pd, x->do_causal_pd, x->tol_pd, x->ol_pd);
     x->sta_pd=NULL;
     x->c = NULL;
     
