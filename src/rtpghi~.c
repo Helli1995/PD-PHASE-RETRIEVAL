@@ -19,8 +19,7 @@ typedef struct _rtpghi_tilde {
 	t_symbol *window_type_pd;
 	phaseret_rtpghi_state_s* sta_pd;
 	ltfat_complex_s *c;
-	int win_def;
-
+	
     t_float f;
    
 } t_rtpghi_tilde;
@@ -29,6 +28,8 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	
 	t_rtpghi_tilde *x = (t_rtpghi_tilde *)(w[1]);
 	t_sample *s =      (t_sample *) (w[2]);
+	t_sample *out=(t_sample *) (w[3]);
+	t_sample *out1= (t_sample *) (w[4]);
 	int            n =             (int)(w[5]);
 
 	ltfat_complex_s *c = (ltfat_complex_s *) x->c;
@@ -38,12 +39,10 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	if ((s==NULL) || ((x->sta_pd)==NULL)) {
 	   pd_error(x, "arrays not initialised");
 	}
+	
 	else
 	{
 		e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
-		
-		t_sample *out=(t_sample *) (w[3]);
-		t_sample *out1= (t_sample *) (w[4]);
 
 		if (e == 0) {
 			while (n--) {
@@ -73,12 +72,12 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     ltfat_int M = (ltfat_int) sp[0]->s_n;
     
     post("stft_length [M]: %d\n", M);
-	const char* win = x->window_type_pd->s_name;
+	//const char* win = x->window_type_pd->s_name;
 	const char win_[4] = "hann";
 	LTFAT_FIRWIN window;
 	
-	if ((x->win_def) == 1) {
-		window = ltfat_str2firwin(win);
+	if (x->window_type_pd != NULL) {
+		window = ltfat_str2firwin(x->window_type_pd->s_name);
 	}
 	else {
 		window = ltfat_str2firwin(win_);
@@ -97,26 +96,18 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     post("Causal yes=1, no=0, [do_causal]: %d\n", do_causal);
 	
 	
-	// Check for existing ltfat_state (to do: implement init only when input param.)
+	// Check for existing ltfat_state (to do: implement init only when input param. changes)
 	int init_s;
 	ltfat_int w = 1;
 	
-	if (x->sta_pd == NULL) {
-		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
-		post("failed to init, status %d", init_s);
-		if (init_s == 0) {
-			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
-		}
-		else {
-			post("failed to init, status %d", init_s);
-			pd_error(x, "failed to init, status %d", init_s);
-		}
-	}
-	else {
-		
+	if (x->sta_pd != NULL) {
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		phaseret_rtpghi_done_s(&(x->sta_pd));
+		x->sta_pd=NULL;
+	}
+	if  (x->sta_pd == NULL) {
 		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+		
 		if (init_s == 0) {
 			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
 		}
@@ -125,24 +116,32 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 		}
 	}
 	
-   
-   x->c = getbytes(M * sizeof *(x->c));
-   post("length of c[]: %d", M * sizeof *(x->c));
+	if (x->c != NULL) {
+		freebytes(x->c, M * sizeof *(x->c));
+		x->c = NULL;
+	}
+	if (x->c == NULL) {
+		x->c = getbytes(M * sizeof *(x->c));
+	}
+	
+   post("length of c[] [bit]: %d", M * sizeof *(x->c));
    post("s_n: %d", sp[0]->s_n);
    
-   dsp_add(rtpghi_tilde_perform, 3,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
+   dsp_add(rtpghi_tilde_perform, 5,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
 }
 
 void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
 
   t_rtpghi_tilde *x = (t_rtpghi_tilde *)pd_new(rtpghi_tilde_class);
-	x->win_def = 0;
+	x->window_type_pd = NULL;
+	x->ol_pd = 4.0;
+	x->tol_pd = 0.000001;
+	x->do_causal_pd = 1.0;
 	
 	switch (argc) {				//to do: typechecks and value checks)
 		case 4: default:
 			x->window_type_pd = atom_getsymbol(argv+3);
-			x->win_def = 1;
 		case 3:
 			x->do_causal_pd = atom_getfloat(argv+2);
 		case 2:
@@ -151,17 +150,10 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 			x->ol_pd = atom_getfloat(argv);
 			break;
 		case 0:
-			x->ol_pd = 4.0;
-			x->tol_pd = 0.000001;
-			x->do_causal_pd = 1.0;
-			x->win_def = 0;
 			break;
 	}
-	
-	if (argc == 2) {x->do_causal_pd = 1.f;}
-	else if (argc == 1) {x->do_causal_pd = 1.f; x->tol_pd = 0.000001;}
-	
-	post("win_def %d, do_causal %f, tol %f, ol %f", x->win_def, x->do_causal_pd, x->tol_pd, x->ol_pd);
+
+	post("win_def %p, do_causal %f, tol %f, ol %f", x->window_type_pd, x->do_causal_pd, x->tol_pd, x->ol_pd);
     x->sta_pd=NULL;
     x->c = NULL;
     
@@ -183,7 +175,7 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
 }
 
 void rtpghi_tilde_setup(void) {
-
+	
    rtpghi_tilde_class = class_new(gensym("rtpghi~"),
                               (t_newmethod)rtpghi_tilde_new,
                                (t_method)rtpghi_tilde_free,
@@ -191,8 +183,8 @@ void rtpghi_tilde_setup(void) {
                               CLASS_DEFAULT,
                                A_GIMME,
                               0);
+	//to do: add methods to change do_causal_pd, tol_pd on runtime
    class_addmethod(rtpghi_tilde_class,
                    (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
    CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
 }
-
