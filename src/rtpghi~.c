@@ -19,6 +19,7 @@ typedef struct _rtpghi_tilde {
 	t_symbol *window_type_pd;
 	phaseret_rtpghi_state_s* sta_pd;
 	ltfat_complex_s *c;
+	t_sample *s2;
 	
     t_float f;
    
@@ -33,6 +34,12 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	int            n =             (int)(w[5]);
 
 	ltfat_complex_s *c = (ltfat_complex_s *) x->c;
+	t_sample *s2 = (t_sample *) x->s2;
+	
+	int n2 = n/2;
+	while (n2--) {
+		*s2++ = *s++;
+	}
 
 	int e = 0;
 
@@ -42,7 +49,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	
 	else
 	{
-		e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
+		e = phaseret_rtpghi_execute_s(x->sta_pd, s2, c);
 
 		if (e == 0) {
 			while (n--) {
@@ -118,10 +125,13 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	
 	if (x->c != NULL) {
 		freebytes(x->c, M * sizeof *(x->c));
+		freebytes(x->s2, (M/2+1) * sizeof *(x->c));
 		x->c = NULL;
+		x->s2 = NULL;
 	}
 	if (x->c == NULL) {
 		x->c = getbytes(M * sizeof *(x->c));
+		x->s2 = getbytes((M/2+1) * sizeof *(x->c));
 	}
 	
    post("length of c[] [bit]: %d", M * sizeof *(x->c));
@@ -171,6 +181,7 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		phaseret_rtpghi_done_s(&(x->sta_pd));
 		freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
+		freebytes(x->s2, ((sp[0]->s_n)/2+1) * sizeof *(x->c));
 	}
 }
 
