@@ -151,17 +151,17 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 			x->ol_pd = atom_getfloat(argv);
 			break;
 		case 0:
-			x->ol_pd = 4.f;
+			x->ol_pd = 4.0;
 			x->tol_pd = 0.000001;
-			x->do_causal_pd = 1.f;
+			x->do_causal_pd = 1.0;
 			x->win_def = 0;
 			break;
 	}
 	
-	if (argc < 3) {x->do_causal_pd = 1.f;}
-	else if (argc < 2) {x->do_causal_pd = 1.f; x->tol_pd = 0.000001;}
-	else if (argc < 2) {x->do_causal_pd = 1.f; x->tol_pd = 0.000001; x->ol_pd = 4.f;}
+	if (argc == 2) {x->do_causal_pd = 1.f;}
+	else if (argc == 1) {x->do_causal_pd = 1.f; x->tol_pd = 0.000001;}
 	
+	post("win_def %d, do_causal %f, tol %f, ol %f", x->win_def, x->do_causal_pd, x->tol_pd, x->ol_pd);
     x->sta_pd=NULL;
     x->c = NULL;
     
