@@ -14,16 +14,14 @@ static t_class *rtpghi_tilde_class;
 typedef struct _rtpghi_tilde {
 	t_object  x_obj;
 	t_float ol_pd;
-	t_float M_pd;
 	t_float tol_pd;
 	t_float do_causal_pd;
-	t_symbol window_type;
+	t_symbol *window_type_pd;
 	phaseret_rtpghi_state_s* sta_pd;
 	ltfat_complex_s *c;
+	int win_def;
 
     t_float f;
-    t_outlet *out_real;
-    t_outlet *out_imag;
    
 } t_rtpghi_tilde;
 
@@ -38,7 +36,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	int e = 0;
 
 	if ((s==NULL) || ((x->sta_pd)==NULL)) {
-	   post("arrays not initialised");
+	   pd_error(x, "arrays not initialised");
 	}
 	else
 	{
@@ -50,7 +48,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 		if (e == 0) {
 			while (n--) {
 				
-				if (n >= (x->M_pd)/2-1){
+				if (n >= n/2-1){
 					*out++ = creal(*c);
 					*out1++ = cimag(*c++);
 				}
@@ -62,7 +60,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 			}
 		}
 		else {
-			post("error of type: %d", e);
+			pd_error(x, "error of type: %d", e);
 		}
 	}
 
@@ -71,12 +69,21 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 
 void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 {
-    ltfat_int M = x->M_pd;
+	post("start DSP");
+    ltfat_int M = (ltfat_int) sp[0]->s_n;
     
     post("stft_length [M]: %d\n", M);
-    const char* win=x->window_type.s_name;
-    
-    LTFAT_FIRWIN window = ltfat_str2firwin(win);
+	const char* win = x->window_type_pd->s_name;
+	const char win_[4] = "hann";
+	LTFAT_FIRWIN window;
+	
+	if ((x->win_def) == 1) {
+		window = ltfat_str2firwin(win);
+	}
+	else {
+		window = ltfat_str2firwin(win_);
+	}
+	
     double gamma = phaseret_firwin2gamma(window, M);
     post("window normalization parameter [gamma]: %f\n", gamma);
     
@@ -86,25 +93,41 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
     double tol = x->tol_pd;
     post("Tolerance [tol]: %f\n", tol);
     
-    int do_causal = 0;
+    int do_causal = x->do_causal_pd;
     post("Causal yes=1, no=0, [do_causal]: %d\n", do_causal);
-    
-    post("%p", (x->sta_pd));
-    int init_s = 0;
+	
+	
+	// Check for existing ltfat_state (to do: implement init only when input param.)
+	int init_s;
 	ltfat_int w = 1;
 	
-    init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
-    
-    //post("%p", (*((x->sta_pd)+4)));
-    if (init_s == 0) {
-        post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
-    }
-    else {
-        post("failed to init, status %d", init_s);
-    }
+	if (x->sta_pd == NULL) {
+		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+		post("failed to init, status %d", init_s);
+		if (init_s == 0) {
+			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
+		}
+		else {
+			post("failed to init, status %d", init_s);
+			pd_error(x, "failed to init, status %d", init_s);
+		}
+	}
+	else {
+		
+		post("destroyed state at adrr: %p\n", &(x->sta_pd));
+		phaseret_rtpghi_done_s(&(x->sta_pd));
+		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+		if (init_s == 0) {
+			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
+		}
+		else {
+			pd_error(x, "failed to init, status %d", init_s);
+		}
+	}
+	
    
    x->c = getbytes(M * sizeof *(x->c));
-   post("length of c[]: %d", (M/2+1) * sizeof *(x->c));
+   post("length of c[]: %d", M * sizeof *(x->c));
    post("s_n: %d", sp[0]->s_n);
    
    dsp_add(rtpghi_tilde_perform, 3,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
@@ -114,34 +137,49 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
 
   t_rtpghi_tilde *x = (t_rtpghi_tilde *)pd_new(rtpghi_tilde_class);
-
-    x->ol_pd=atom_getfloat(argv);
-    x->M_pd=atom_getfloat(argv+1);
-    x->tol_pd=atom_getfloat(argv+2);
-    x->do_causal_pd=atom_getfloat(argv+3);
-    x->window_type= *atom_getsymbol(argv+4);
-    x->sta_pd=NULL;
-    x-> c = NULL;
-    
-    outlet_new(&x->x_obj, &s_signal);
-    outlet_new(&x->x_obj, &s_signal);
-    
-    x->out_real = getbytes(sizeof (t_sample *));
-	x->out_imag = getbytes(sizeof (t_sample *));
+	x->win_def = 0;
 	
+	switch (argc) {				//to do: typechecks and value checks)
+		case 4: default:
+			x->window_type_pd = atom_getsymbol(argv+3);
+			x->win_def = 1;
+		case 3:
+			x->do_causal_pd = atom_getfloat(argv+2);
+		case 2:
+			x->tol_pd = atom_getfloat(argv+1);
+		case 1:
+			x->ol_pd = atom_getfloat(argv);
+			break;
+		case 0:
+			x->ol_pd = 4.0;
+			x->tol_pd = 0.000001;
+			x->do_causal_pd = 1.0;
+			x->win_def = 0;
+			break;
+	}
+	
+	if (argc == 2) {x->do_causal_pd = 1.f;}
+	else if (argc == 1) {x->do_causal_pd = 1.f; x->tol_pd = 0.000001;}
+	
+	post("win_def %d, do_causal %f, tol %f, ol %f", x->win_def, x->do_causal_pd, x->tol_pd, x->ol_pd);
+    x->sta_pd=NULL;
+    x->c = NULL;
+    
+    outlet_new(&x->x_obj, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+
   return (void *)x;
 }
 
 
-void rtpghi_tilde_free(t_rtpghi_tilde *x)
+void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
 {
-	ltfat_int M = x->M_pd;
-	post("destroyed state at adrr: %p\n", &(x->sta_pd));
-	phaseret_rtpghi_done_s(&(x->sta_pd));
-
-	freebytes(x->c, (M/2+1) * sizeof *(x->c));
-	freebytes(x->out_real, sizeof (t_sample*));
-	freebytes(x->out_imag, sizeof (t_sample *));
+	if (x->sta_pd != NULL){
+		
+		post("destroyed state at adrr: %p\n", &(x->sta_pd));
+		phaseret_rtpghi_done_s(&(x->sta_pd));
+		freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
+	}
 }
 
 void rtpghi_tilde_setup(void) {
@@ -157,3 +195,4 @@ void rtpghi_tilde_setup(void) {
                    (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
    CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
 }
+
