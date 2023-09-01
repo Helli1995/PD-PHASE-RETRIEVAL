@@ -101,22 +101,14 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	int init_s;
 	ltfat_int w = 1;
 	
-	if (x->sta_pd == NULL) {
-		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
-		post("failed to init, status %d", init_s);
-		if (init_s == 0) {
-			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
-		}
-		else {
-			post("failed to init, status %d", init_s);
-			pd_error(x, "failed to init, status %d", init_s);
-		}
-	}
-	else {
-		
+	if (x->sta_pd != NULL) {
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		phaseret_rtpghi_done_s(&(x->sta_pd));
+		x->sta_pd=NULL;
+	}
+	if  (x->sta_pd == NULL) {
 		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+		
 		if (init_s == 0) {
 			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
 		}
