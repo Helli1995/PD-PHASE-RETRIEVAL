@@ -111,7 +111,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 		x->sta_pd=NULL;
 	}
 	if  (x->sta_pd == NULL) {
-		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+		init_s = phaseret_rtpghi_init_s(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
 		
 		if (init_s == 0) {
 			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
