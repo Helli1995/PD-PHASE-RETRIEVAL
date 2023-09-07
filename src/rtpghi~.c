@@ -140,6 +140,22 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
    dsp_add(rtpghi_tilde_perform, 5,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
 }
 
+void rtpghi_tilde_causal(t_rtpghi_tilde *x, t_floatarg f)
+{
+	if ((f == 0.) || (f == 1.)) {
+		int causal = f;
+		rtpghi_set_causal(x->sta_pd, causal);
+	}
+	else {
+		pd_error(x, "failed to set (a)causal, input has to be either 0 or 1, but got: %f", f);
+	}
+}
+
+void rtpghi_tilde_res(t_rtpghi_tilde *x)
+{
+	rtpghi_rerset(x->sta_pd);
+}
+
 void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
 
@@ -193,8 +209,16 @@ void rtpghi_tilde_setup(void) {
                               CLASS_DEFAULT,
                                A_GIMME,
                               0);
-	//to do: add methods to change do_causal_pd, tol_pd on runtime
-   class_addmethod(rtpghi_tilde_class,
-                   (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
-   CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
-}
+	//to do: maybe change tol_pd on runtime (while DSP turned ON)
+	class_addbang  (rtpghi_tilde_class, rtpghi_tilde_res);
+	class_addmethod(rtpghi_tilde_class,
+			(t_method)rtpghi_tilde_causal, gensym("set_c"),
+			A_DEFFLOAT, 0);
+	/*
+	class_addmethod(rtpghi_tilde_class,
+			(t_method)rtpghi_tilde_tol, gensym("set_t"),
+			A_DEFFLOAT, 0);*/
+	class_addmethod(rtpghi_tilde_class,
+				   (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
+	CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
+	}
