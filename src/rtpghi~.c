@@ -29,16 +29,9 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	t_sample *out=(t_sample *) (w[3]);
 	t_sample *out1= (t_sample *) (w[4]);
 	int            n =             (int)(w[5]);
-	//int            n =             ((int)(w[5]))/8;
 
 	ltfat_complex_s *c = (ltfat_complex_s *) x->c;
 	t_sample *s2 = (t_sample *) x->s2;
-	/*
-	int n2 = n/2;
-	while (n2--) {
-		*s2++ = *s++;
-	}*/
-
 	int e = 0;
 
 	if ((s==NULL) || ((x->sta_pd)==NULL)) {
@@ -53,15 +46,6 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 			while (n--) {
 				*out++ = creal(*c);
 				*out1++ = cimag(*c++);
-				/*if (n >= n/2-1){
-					*out++ = creal(*c);
-					*out1++ = cimag(*c++);
-				}
-				else {
-					
-					*out++ = 0.f;
-					*out1++ = 0.f;
-				}*/
 			}
 		}
 		else {
@@ -76,7 +60,6 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 {
 	post("start DSP");
     ltfat_int M = (ltfat_int) sp[0]->s_n;
-	//ltfat_int M = (ltfat_int) sp[0]->s_n/4;
     
     post("stft_length [M]: %d\n", M);
 	const char win_[4] = "hann";
@@ -135,7 +118,6 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	
    post("length of c[] [bit]: %d", M * sizeof *(x->c));
    post("s_n: %d", sp[0]->s_n);
-	//post("overlap_intern:", sp[0]->s_overlap);
    
    dsp_add(rtpghi_tilde_perform, 5,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
 }
@@ -195,9 +177,7 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		phaseret_rtpghi_done_s(&(x->sta_pd));
 		freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
-		//freebytes(x->c, (sp[0]->s_n)/8 * sizeof *(x->c));
 		freebytes(x->s2, ((sp[0]->s_n)/2+1) * sizeof *(x->c));
-		//freebytes(x->s2, (((sp[0]->s_n)/8)/2+1) * sizeof *(x->c));
 	}
 }
 
