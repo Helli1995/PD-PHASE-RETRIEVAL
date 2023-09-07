@@ -18,7 +18,6 @@ typedef struct _rtpghi_tilde {
 	t_symbol *window_type_pd;
 	phaseret_rtpghi_state_s* sta_pd;
 	ltfat_complex_s *c;
-	t_sample *s2;
     t_float f;
 } t_rtpghi_tilde;
 
@@ -31,7 +30,6 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	int            n =             (int)(w[5]);
 
 	ltfat_complex_s *c = (ltfat_complex_s *) x->c;
-	t_sample *s2 = (t_sample *) x->s2;
 	int e = 0;
 
 	if ((s==NULL) || ((x->sta_pd)==NULL)) {
