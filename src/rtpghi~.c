@@ -28,16 +28,16 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	t_sample *s =      (t_sample *) (w[2]);
 	t_sample *out=(t_sample *) (w[3]);
 	t_sample *out1= (t_sample *) (w[4]);
-	int            n =             (int)(w[5])4;
+	int            n =             (int)(w[5]);
 	//int            n =             ((int)(w[5]))/8;
 
 	ltfat_complex_s *c = (ltfat_complex_s *) x->c;
 	t_sample *s2 = (t_sample *) x->s2;
-	
+	/*
 	int n2 = n/2;
 	while (n2--) {
 		*s2++ = *s++;
-	}
+	}*/
 
 	int e = 0;
 
@@ -47,12 +47,13 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	
 	else
 	{
-		e = phaseret_rtpghi_execute_s(x->sta_pd, s2, c);
+		e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
 
 		if (e == 0) {
 			while (n--) {
-				
-				if (n >= n/2-1){
+				*out++ = creal(*c);
+				*out1++ = cimag(*c++);
+				/*if (n >= n/2-1){
 					*out++ = creal(*c);
 					*out1++ = cimag(*c++);
 				}
@@ -60,7 +61,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 					
 					*out++ = 0.f;
 					*out1++ = 0.f;
-				}
+				}*/
 			}
 		}
 		else {
@@ -111,7 +112,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 		x->sta_pd=NULL;
 	}
 	if  (x->sta_pd == NULL) {
-		init_s = phaseret_rtpghi_init_s(gamma, w, a , M, tol, do_causal, &(x->sta_pd));
+		init_s = phaseret_rtpghi_init_s(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
 		
 		if (init_s == 0) {
 			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
