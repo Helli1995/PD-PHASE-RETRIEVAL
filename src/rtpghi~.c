@@ -126,7 +126,7 @@ void rtpghi_tilde_causal(t_rtpghi_tilde *x, t_floatarg f)
 {
 	if ((f == 0.) || (f == 1.)) {
 		int causal = f;
-		rtpghi_set_causal(x->sta_pd, causal);
+		phaseret_rtpghi_set_causal(x->sta_pd, causal);
 	}
 	else {
 		pd_error(x, "failed to set (a)causal, input has to be either 0 or 1, but got: %f", f);
@@ -135,7 +135,7 @@ void rtpghi_tilde_causal(t_rtpghi_tilde *x, t_floatarg f)
 
 void rtpghi_tilde_res(t_rtpghi_tilde *x)
 {
-	rtpghi_rerset(x->sta_pd);
+	phaseret_rtpghi_reset_s(x->sta_pd);
 }
 
 void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
