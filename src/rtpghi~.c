@@ -126,17 +126,27 @@ void rtpghi_tilde_causal(t_rtpghi_tilde *x, t_floatarg f)
 {
 	if ((f == 0.) || (f == 1.)) {
 		int causal = f;
-		phaseret_rtpghi_set_causal(x->sta_pd, causal);
+		phaseret_rtpghi_set_causal_s(x->sta_pd, causal);
 	}
 	else {
 		pd_error(x, "failed to set (a)causal, input has to be either 0 or 1, but got: %f", f);
 	}
 }
+void rtpghi_tilde_tol(t_rtpghi_tilde *x, t_floatarg f)
+{
+	if ((f > 0.) && (f < 1.)) {
+		double tol = f;
+		phaseret_rtpghi_set_tol_s(x->sta_pd, tol);
+	}
+	else {
+		pd_error(x, "failed to set tol, input float has to be  > 0 && <1, but got: %f", f);
+	}
+}
 
-void rtpghi_tilde_res(t_rtpghi_tilde *x)
+/*void rtpghi_tilde_res(t_rtpghi_tilde *x)
 {
 	phaseret_rtpghi_reset_s(x->sta_pd);
-}
+}*/
 
 void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -190,14 +200,14 @@ void rtpghi_tilde_setup(void) {
                                A_GIMME,
                               0);
 	//to do: maybe change tol_pd on runtime (while DSP turned ON)
-	class_addbang  (rtpghi_tilde_class, rtpghi_tilde_res);
+	/*class_addbang  (rtpghi_tilde_class, rtpghi_tilde_res);*/
 	class_addmethod(rtpghi_tilde_class,
 			(t_method)rtpghi_tilde_causal, gensym("set_c"),
 			A_DEFFLOAT, 0);
-	/*
+	
 	class_addmethod(rtpghi_tilde_class,
 			(t_method)rtpghi_tilde_tol, gensym("set_t"),
-			A_DEFFLOAT, 0);*/
+			A_DEFFLOAT, 0);
 	class_addmethod(rtpghi_tilde_class,
 				   (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
 	CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
