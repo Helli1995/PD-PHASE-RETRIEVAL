@@ -105,13 +105,10 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	
 	if (x->c != NULL) {
 		freebytes(x->c, M * sizeof *(x->c));
-		freebytes(x->s2, (M/2+1) * sizeof *(x->c));
 		x->c = NULL;
-		x->s2 = NULL;
 	}
 	if (x->c == NULL) {
 		x->c = getbytes(M * sizeof *(x->c));
-		x->s2 = getbytes((M/2+1) * sizeof *(x->c));
 	}
 	
    post("length of c[] [bit]: %d", M * sizeof *(x->c));
@@ -122,7 +119,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 
 void rtpghi_tilde_causal(t_rtpghi_tilde *x, t_floatarg f)
 {
-	if ((f == 0.) || (f == 1.)) {
+	if ((f == 0.0) || (f == 1.0)) {
 		int causal = f;
 		phaseret_rtpghi_set_causal_s(x->sta_pd, causal);
 	}
@@ -132,7 +129,7 @@ void rtpghi_tilde_causal(t_rtpghi_tilde *x, t_floatarg f)
 }
 void rtpghi_tilde_tol(t_rtpghi_tilde *x, t_floatarg f)
 {
-	if ((f > 0.) && (f < 1.)) {
+	if ((f > 0.0) && (f < 1.0)) {
 		double tol = f;
 		phaseret_rtpghi_set_tol_s(x->sta_pd, tol);
 	}
@@ -185,7 +182,6 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		phaseret_rtpghi_done_s(&(x->sta_pd));
 		freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
-		freebytes(x->s2, ((sp[0]->s_n)/2+1) * sizeof *(x->c));
 	}
 }
 
@@ -200,11 +196,11 @@ void rtpghi_tilde_setup(void) {
 	//to do: maybe change tol_pd on runtime (while DSP turned ON)
 	/*class_addbang  (rtpghi_tilde_class, rtpghi_tilde_res);*/
 	class_addmethod(rtpghi_tilde_class,
-			(t_method)rtpghi_tilde_causal, gensym("set_c"),
+			(t_method)rtpghi_tilde_causal, gensym("causal"),
 			A_DEFFLOAT, 0);
 	
 	class_addmethod(rtpghi_tilde_class,
-			(t_method)rtpghi_tilde_tol, gensym("set_t"),
+			(t_method)rtpghi_tilde_tol, gensym("tolerance"),
 			A_DEFFLOAT, 0);
 	class_addmethod(rtpghi_tilde_class,
 				   (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
