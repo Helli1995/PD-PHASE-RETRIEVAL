@@ -1,0 +1,256 @@
+#N canvas 514 49 866 860 12;
+#X msg 46 50 \; pd dsp \$1;
+#X obj 47 19 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
+#X obj 44 255 dac~;
+#X obj 366 7 loadbang;
+#N canvas 625 68 760 628 fft-irfft 1;
+#X obj 37 232 rfft~;
+#X obj 145 77 block~ 1024 4;
+#X obj 62 139 tabreceive~ \$0.hann;
+#X obj 33 140 *~;
+#X obj 130 567 tabreceive~ \$0.hann;
+#X obj 101 566 *~;
+#X obj 38 41 inlet~;
+#X obj 105 602 outlet~;
+#X obj 147 28 inlet;
+#X obj 145 53 t a a;
+#X obj 69 341 /~;
+#X obj 37 343 /~;
+#X obj 84 405 rifft~;
+#N canvas 698 126 564 537 normalize 0;
+#X obj 119 39 inlet;
+#X obj 154 356 outlet;
+#X obj 209 38 unpack s f f f;
+#X obj 244 173 * 6;
+#X obj 251 224 /;
+#X obj 274 173 t b f;
+#X obj 265 72 sel 32 16 8 4 2;
+#X obj 301 101 1;
+#X obj 328 100 2;
+#X obj 357 100 4;
+#X obj 388 100 8;
+#X obj 254 103 0.816;
+#X connect 0 0 2 0;
+#X connect 2 1 3 0;
+#X connect 2 2 6 0;
+#X connect 3 0 4 0;
+#X connect 4 0 1 0;
+#X connect 5 0 4 0;
+#X connect 5 1 4 1;
+#X connect 6 0 11 0;
+#X connect 6 1 7 0;
+#X connect 6 2 8 0;
+#X connect 6 3 9 0;
+#X connect 6 4 10 0;
+#X connect 7 0 5 0;
+#X connect 8 0 5 0;
+#X connect 9 0 5 0;
+#X connect 10 0 5 0;
+#X connect 11 0 5 0;
+#X restore 248 80 pd normalize;
+#X obj 246 110 t f f;
+#X connect 0 0 11 0;
+#X connect 0 1 10 0;
+#X connect 2 0 3 1;
+#X connect 3 0 0 0;
+#X connect 4 0 5 1;
+#X connect 5 0 7 0;
+#X connect 6 0 3 0;
+#X connect 8 0 9 0;
+#X connect 9 0 1 0;
+#X connect 9 1 13 0;
+#X connect 10 0 12 1;
+#X connect 11 0 12 0;
+#X connect 12 0 5 0;
+#X connect 13 0 14 0;
+#X connect 14 0 11 1;
+#X connect 14 1 10 1;
+#X restore 346 191 pd fft-irfft;
+#X obj 347 263 dac~;
+#N canvas 618 124 760 628 fft-rtpghi 0;
+#X obj 37 232 rfft~;
+#X obj 36 255 *~;
+#X obj 70 254 *~;
+#X obj 35 315 sqrt~;
+#X obj 145 77 block~ 1024 4;
+#X obj 81 479 rifft~;
+#X obj 145 99 table \$0.hann;
+#X obj 409 195 s \$0.hann;
+#X msg 408 170 cosinesum \$1 0.5 -0.5;
+#X obj 62 139 tabreceive~ \$0.hann;
+#X obj 33 140 *~;
+#X obj 145 53 t a a;
+#X obj 252 77 unpack s f f f;
+#X obj 130 567 tabreceive~ \$0.hann;
+#X obj 101 566 *~;
+#X obj 38 41 inlet~;
+#X obj 105 602 outlet~;
+#X obj 44 189 *~ 1;
+#X obj 147 28 inlet;
+#X obj 35 281 +~;
+#X obj 252 122 t f f;
+#N canvas 915 136 564 537 normalize 0;
+#X obj 119 39 inlet;
+#X obj 118 442 outlet;
+#X obj 300 44 inlet;
+#X obj 193 282 /;
+#X obj 216 231 t b f;
+#X obj 207 130 sel 32 16 8 4 2;
+#X obj 243 159 1;
+#X obj 270 158 2;
+#X obj 299 158 4;
+#X obj 330 158 8;
+#X obj 196 161 0.816;
+#X floatatom 174 194 5 0 0 0 - - - 0;
+#X obj 139 234 * 1.55;
+#X connect 0 0 12 0;
+#X connect 2 0 5 0;
+#X connect 3 0 1 0;
+#X connect 4 0 3 0;
+#X connect 4 1 3 1;
+#X connect 5 0 10 0;
+#X connect 5 1 6 0;
+#X connect 5 2 7 0;
+#X connect 5 3 8 0;
+#X connect 5 4 9 0;
+#X connect 6 0 4 0;
+#X connect 7 0 4 0;
+#X connect 8 0 4 0;
+#X connect 9 0 4 0;
+#X connect 10 0 4 0;
+#X connect 11 0 12 1;
+#X connect 12 0 3 0;
+#X restore 248 212 pd normalize;
+#X obj 248 235 t f f;
+#X obj 77 397 /~;
+#X obj 117 400 /~;
+#X obj 35 344 rtpghi~ 16 1e-05 0 hann;
+#X connect 0 0 1 0;
+#X connect 0 0 1 1;
+#X connect 0 1 2 0;
+#X connect 0 1 2 1;
+#X connect 1 0 19 0;
+#X connect 2 0 19 1;
+#X connect 3 0 25 0;
+#X connect 5 0 14 0;
+#X connect 8 0 7 0;
+#X connect 9 0 10 1;
+#X connect 10 0 17 0;
+#X connect 11 0 4 0;
+#X connect 11 1 12 0;
+#X connect 12 1 20 0;
+#X connect 12 2 21 1;
+#X connect 13 0 14 1;
+#X connect 14 0 16 0;
+#X connect 15 0 10 0;
+#X connect 17 0 0 0;
+#X connect 18 0 11 0;
+#X connect 19 0 3 0;
+#X connect 20 0 21 0;
+#X connect 20 1 8 0;
+#X connect 21 0 22 0;
+#X connect 22 0 23 1;
+#X connect 22 1 24 1;
+#X connect 23 0 5 0;
+#X connect 24 0 5 1;
+#X connect 25 0 23 0;
+#X connect 25 1 24 0;
+#X restore 43 187 pd fft-rtpghi;
+#X obj 67 123 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 48 146 *~ 1;
+#X obj 393 154 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 343 152 *~ 1;
+#X obj 86 231 env~;
+#X floatatom 86 254 5 0 0 0 - - - 0;
+#X floatatom 385 264 5 0 0 0 - - - 0;
+#X obj 385 240 env~;
+#X obj 671 263 dac~;
+#X obj 706 207 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 666 209 *~ 1;
+#X floatatom 711 263 5 0 0 0 - - - 0;
+#X obj 711 239 env~;
+#X obj 47 96 noise~;
+#X obj 340 95 noise~;
+#X obj 664 131 noise~;
+#X msg 366 30 set 2048 16 1;
+#X obj 102 97 osc~ 440;
+#X obj 112 125 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 93 148 *~ 1;
+#X obj 407 97 osc~ 440;
+#X obj 463 153 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 421 152 *~ 1;
+#X obj 725 132 osc~ 440;
+#X obj 769 207 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 727 206 *~ 1;
+#X text 34 373 Real-Time Spectrogamm Inversion using the Algorithm
+of Real Time Phase Gradient Heap Integration \, introduced by Zdeněk
+Průša and Peter L. Søndergaard in Brno in 2016 https://www.dafx.de/paper-archive/2016/dafxpapers/03-DAFx-16_paper_02-PN.pdf
+, f 114;
+#X text 36 293 signal from magnitude using rtpghi~;
+#X text 356 293 signal from fft- ifft;
+#X text 653 289 original signal;
+#X text 33 424 The rtpghi~ PD-Object makes use of their backend c-libraries
+libltfat and libphaseret to recreate the phase of a signal with only
+the stft-magnitude available \, shortly speaking "phase retrieval".
+, f 114;
+#X text 110 531 2 - Relative TOLERANCE of coefficients (defaults to
+1e-06);
+#X text 109 551 3 - CAUSAL Using zero delay (1) or one frame delay
+(0 \, default) version of the algorithm, f 103;
+#X text 109 573 4 - WINDOW type for the algorithm \, should match the
+ffts window type \, unless you want to create more artifacts (default
+hanning), f 103;
+#X text 109 619 Implemented windows: "hann"="hanning"="nuttall10" \,
+"sqrthann"="cosine"="sine" \, "hamming"="nuttall01" \, "square"="rect"
+\, "tria"="triangular"="bartlett" \, "sqrttria" \, "blackman" \, "blackman2"
+\, "nutall" \, "nutall12" \, "ogg"="itersine" \, "nutall20" \, "nutall11"
+\, "nutall02" \, "nutall30" \, "nutall21" \, "nutall03" \, "truncgauss01"
+\, "truncgauss005";
+#X text 34 480 Arguments: 1 - OVERLAP of subsequent windows (has to
+match with the overlap in the subpatch used) \, therefore have a look
+at "block~" and "switch" (defaults to 4), f 114;
+#X obj 598 397 rtpghi~;
+#X text 55 747 A Higher overlap makes the signal reconstruction way
+better \, recommended at least 8 or 16;
+#X connect 1 0 0 0;
+#X connect 3 0 23 0;
+#X connect 4 0 5 0;
+#X connect 4 0 5 1;
+#X connect 4 0 14 0;
+#X connect 6 0 2 0;
+#X connect 6 0 2 1;
+#X connect 6 0 11 0;
+#X connect 7 0 8 1;
+#X connect 8 0 6 0;
+#X connect 9 0 10 1;
+#X connect 10 0 4 0;
+#X connect 11 0 12 0;
+#X connect 14 0 13 0;
+#X connect 16 0 17 1;
+#X connect 17 0 19 0;
+#X connect 17 0 15 0;
+#X connect 17 0 15 1;
+#X connect 19 0 18 0;
+#X connect 20 0 8 0;
+#X connect 21 0 10 0;
+#X connect 22 0 17 0;
+#X connect 23 0 6 1;
+#X connect 23 0 4 1;
+#X connect 24 0 26 0;
+#X connect 25 0 26 1;
+#X connect 26 0 6 0;
+#X connect 27 0 29 0;
+#X connect 28 0 29 1;
+#X connect 29 0 4 0;
+#X connect 30 0 32 0;
+#X connect 31 0 32 1;
+#X connect 32 0 15 0;
+#X connect 32 0 15 1;
+#X connect 32 0 19 0;

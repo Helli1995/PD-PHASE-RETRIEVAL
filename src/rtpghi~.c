@@ -1,3 +1,4 @@
+
 //
 //  test.c
 //
@@ -205,4 +206,6 @@ void rtpghi_tilde_setup(void) {
 	class_addmethod(rtpghi_tilde_class,
 				   (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
 	CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
+	class_sethelpsymbol(rtpghi_tilde_class, gensym("rtpghi~"));
 	}
+
