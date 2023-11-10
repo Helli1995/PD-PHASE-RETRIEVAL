@@ -34,6 +34,7 @@ typedef struct _rtpghi_tilde {
 	t_symbol *window_type_pd;
 	phaseret_rtpghi_state_s* sta_pd;
 	ltfat_complex_s *c;
+	ltfat_int blocksize;
     t_float f;
 } t_rtpghi_tilde;
 
@@ -74,6 +75,9 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 {
 	post("start DSP");
     ltfat_int M = (ltfat_int) sp[0]->s_n;
+	if ((x->blocksize) == 0) {
+		(x->blocksize) = M;
+	}
     
     post("stft_length [M]: %d\n", M);
 	const char win_[4] = "hann";
@@ -103,12 +107,13 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	int init_s;
 	ltfat_int w = 1;
 	
-	/*if (x->sta_pd != NULL) {
+	if (M != (x->blocksize)) {
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		phaseret_rtpghi_done(&(x->sta_pd));
 		x->sta_pd=NULL;
+		x->blocksize = M;
 	}
-	 */
+	
 	if  (x->sta_pd == NULL) {
 		init_s = phaseret_rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
 		
@@ -186,6 +191,7 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
 	post("win_def %p, do_causal %f, tol %f, ol %f", x->window_type_pd, x->do_causal_pd, x->tol_pd, x->ol_pd);
     x->sta_pd=NULL;
     x->c = NULL;
+	x->blocksize = 0;
     
     outlet_new(&x->x_obj, &s_signal);
     outlet_new(&x->x_obj, &s_signal);
