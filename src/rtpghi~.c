@@ -103,11 +103,12 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	int init_s;
 	ltfat_int w = 1;
 	
-	if (x->sta_pd != NULL) {
+	/*if (x->sta_pd != NULL) {
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		phaseret_rtpghi_done(&(x->sta_pd));
 		x->sta_pd=NULL;
 	}
+	 */
 	if  (x->sta_pd == NULL) {
 		init_s = phaseret_rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
 		
