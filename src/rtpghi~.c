@@ -1,14 +1,29 @@
-
-//
-//  test.c
-//
-//
 //  Created by maximilian helligrath on 28.07.23.
 //
 
 #include <m_pd.h>
 #include <phaseret.h>
 #include <ltfat.h>
+
+#if !defined(PD_FLOATSIZE)
+  /* normally, our floats (t_float, t_sample,...) are 32bit */
+# define PD_FLOATSIZE 32
+#endif
+
+#if PD_FLOATSIZE == 32
+#define phaseret_rtpghi_init phaseret_rtpghi_init_s
+#define phaseret_rtpghi_done phaseret_rtpghi_done_s
+#define phaseret_rtpghi_set_tol phaseret_rtpghi_set_tol_s
+#define phaseret_rtpghi_set_causal phaseret_rtpghi_set_causal_s
+#define phaseret_rtpghi_execute phaseret_rtpghi_execute_s
+
+#elif PD_FLOATSIZE == 64
+#define phaseret_rtpghi_init phaseret_rtpghi_init_d
+#define phaseret_rtpghi_done phaseret_rtpghi_done_d
+#define phaseret_rtpghi_set_tol phaseret_rtpghi_set_tol_d
+#define phaseret_rtpghi_set_causal phaseret_rtpghi_set_causal_d
+#define phaseret_rtpghi_execute phaseret_rtpghi_execute_d
+#endif
 
 static t_class *rtpghi_tilde_class;
 typedef struct _rtpghi_tilde {
@@ -39,7 +54,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	
 	else
 	{
-		e = phaseret_rtpghi_execute_s(x->sta_pd, s, c);
+		e = phaseret_rtpghi_execute(x->sta_pd, s, c);
 
 		if (e == 0) {
 			while (n--) {
@@ -90,11 +105,11 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	
 	if (x->sta_pd != NULL) {
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
-		phaseret_rtpghi_done_s(&(x->sta_pd));
+		phaseret_rtpghi_done(&(x->sta_pd));
 		x->sta_pd=NULL;
 	}
 	if  (x->sta_pd == NULL) {
-		init_s = phaseret_rtpghi_init_s(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
+		init_s = phaseret_rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
 		
 		if (init_s == 0) {
 			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
@@ -122,7 +137,7 @@ void rtpghi_tilde_causal(t_rtpghi_tilde *x, t_floatarg f)
 {
 	if ((f == 0.0) || (f == 1.0)) {
 		int causal = f;
-		phaseret_rtpghi_set_causal_s(x->sta_pd, causal);
+		phaseret_rtpghi_set_causal(x->sta_pd, causal);
 	}
 	else {
 		pd_error(x, "failed to set (a)causal, input has to be either 0 or 1, but got: %f", f);
@@ -132,7 +147,7 @@ void rtpghi_tilde_tol(t_rtpghi_tilde *x, t_floatarg f)
 {
 	if ((f > 0.0) && (f < 1.0)) {
 		double tol = f;
-		phaseret_rtpghi_set_tol_s(x->sta_pd, tol);
+		phaseret_rtpghi_set_tol(x->sta_pd, tol);
 	}
 	else {
 		pd_error(x, "failed to set tol, input float has to be  > 0 && <1, but got: %f", f);
@@ -181,7 +196,7 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
 	if (x->sta_pd != NULL){
 		
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
-		phaseret_rtpghi_done_s(&(x->sta_pd));
+		phaseret_rtpghi_done(&(x->sta_pd));
 		freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
 	}
 }
