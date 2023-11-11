@@ -198,6 +198,40 @@ void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f)
 	}
 }
 
+void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s)
+{
+		
+		LTFAT_FIRWIN window;
+		window = ltfat_str2firwin(s.s_name);
+	LTFAT_FIRWIN check = -6;
+	if (window != check) {
+		
+		phaseret_rtpghi_done(&(x->sta_pd));
+		post("destroyed state at adrr: %p\n", &(x->sta_pd));
+		x->sta_pd=NULL;
+		ltfat_int M = x->blocksize;
+		if ((x->blocksize) == 0) {
+			(x->blocksize) = M;
+		}
+		double gamma = phaseret_firwin2gamma(window, M);
+		ltfat_int a = M/(x->ol_pd);
+		double tol = x->tol_pd;
+		int do_causal = x->do_causal_pd;
+		int init_s;
+		ltfat_int w = 1;
+		init_s = phaseret_rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
+		if (init_s == 0) {
+			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
+		}
+		else {
+			pd_error(x, "failed to init, status %d", init_s);
+		}
+	}
+		else {
+			pd_error(x, "failed to set new window, type not supported: %s", s.s_name);
+		}
+}
+
 /*void rtpghi_tilde_res(t_rtpghi_tilde *x)
 {
 	phaseret_rtpghi_reset_s(x->sta_pd);
@@ -266,6 +300,11 @@ void rtpghi_tilde_setup(void) {
 	class_addmethod(rtpghi_tilde_class,
 			(t_method)rtpghi_tilde_overlap, gensym("overlap"),
 			A_DEFFLOAT, 0);
+	
+	class_addmethod(rtpghi_tilde_class,
+			(t_method)rtpghi_tilde_window, gensym("window"),
+			A_DEFSYMBOL, 0);
+	
 	class_addmethod(rtpghi_tilde_class,
 				   (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
 	CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
