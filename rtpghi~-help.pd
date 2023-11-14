@@ -1,10 +1,10 @@
-#N canvas 542 43 866 859 12;
+#N canvas 542 38 866 859 12;
 #X msg 46 50 \; pd dsp \$1;
 #X obj 47 19 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
 0 1;
 #X obj 44 255 dac~;
 #X obj 366 7 loadbang;
-#N canvas 625 68 760 628 fft-irfft 1;
+#N canvas 625 68 760 628 fft-irfft 0;
 #X obj 37 232 rfft~;
 #X obj 145 77 block~ 1024 4;
 #X obj 62 139 tabreceive~ \$0.hann;
@@ -68,7 +68,7 @@
 #X connect 14 1 10 1;
 #X restore 346 191 pd fft-irfft;
 #X obj 347 263 dac~;
-#N canvas 618 124 760 628 fft-rtpghi 1;
+#N canvas 618 124 760 628 fft-rtpghi 0;
 #X obj 37 232 rfft~;
 #X obj 36 255 *~;
 #X obj 70 254 *~;
@@ -191,10 +191,6 @@
 #X obj 769 207 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X obj 727 206 *~ 1;
-#X text 33 373 Real-Time Spectrogamm Inversion using the Algorithm
-of Real Time Phase Gradient Heap Integration \, introduced by Zdeněk
-Průša and Peter L. Søndergaard in Brno in 2016 https://www.dafx.de/paper-archive/2016/dafxpapers/03-DAFx-16_paper_02-PN.pdf
-, f 114;
 #X text 36 293 signal from magnitude using rtpghi~;
 #X text 356 293 signal from fft- ifft;
 #X text 653 289 original signal;
@@ -218,8 +214,12 @@ hanning), f 103;
 #X text 34 480 Arguments: 1 - OVERLAP of subsequent windows (has to
 match with the overlap in the subpatch used) \, therefore have a look
 at "block~" and "switch" (defaults to 4), f 114;
-#X text 55 747 A Higher overlap makes the signal reconstruction way
-better \, recommended at least 8 or 16;
+#X text 33 373 Real-Time Spectrogamm Inversion using the Algorithm
+of Real Time Phase Gradient Heap Integration \, introduced by Zdeněk
+Průša and Peter L. Søndergaard in Brno in 2016: https://www.dafx.de/paper-archive/2016/dafxpapers/03-DAFx-16_paper_02-PN.pdf
+, f 114;
+#X text 55 747 A higher overlap factor improves the signal reconstruction
+\, recommended at least 8 or 16;
 #X connect 1 0 0 0;
 #X connect 3 0 23 0;
 #X connect 4 0 5 0;
