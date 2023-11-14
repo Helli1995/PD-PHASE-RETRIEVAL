@@ -232,9 +232,13 @@ void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s)
 		}
 }
 
-/*void rtpghi_tilde_res(t_rtpghi_tilde *x)
+/*void rtpghi_tilde_reset(t_rtpghi_tilde *x, t_sample)
 {
-	phaseret_rtpghi_reset_s(x->sta_pd);
+	ltfat_int N = x->blocksize;
+	ltfat_int M2 = N/2+1;
+	ltfat_int w = 1;
+	const LTFAT_REAL* schan = s + w * N * M2;
+	phaseret_rtpghi_reset_s(x->sta_pd, &schan);
 }*/
 
 void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
@@ -289,7 +293,7 @@ void rtpghi_tilde_setup(void) {
                                A_GIMME,
                               0);
 	//to do: maybe change tol_pd on runtime (while DSP turned ON)
-	/*class_addbang  (rtpghi_tilde_class, rtpghi_tilde_res);*/
+	//class_addbang  (rtpghi_tilde_class, rtpghi_tilde_reset);
 	class_addmethod(rtpghi_tilde_class,
 			(t_method)rtpghi_tilde_causal, gensym("causal"),
 			A_DEFFLOAT, 0);
