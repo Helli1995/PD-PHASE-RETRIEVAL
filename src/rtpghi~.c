@@ -14,6 +14,7 @@
 
 #elif PD_FLOATSIZE == 64
 #define LTFAT_DOUBLE
+#endif
 
 #include <phaseret.h>
 
@@ -22,9 +23,9 @@
 #define rtpghi_set_tol PHASERET_NAME(rtpghi_set_tol)
 #define rtpghi_set_causal PHASERET_NAME(rtpghi_set_causal)
 #define rtpghi_execute PHASERET_NAME(rtpghi_execute)
-#define complex LTFAT_NAME(complex)
+#define ltfat_complex LTFAT_COMPLEX
 #define rtpghi_state PHASERET_NAME(rtpghi_state)
-#endif
+
 
 static t_class *rtpghi_tilde_class;
 typedef struct _rtpghi_tilde {
@@ -34,7 +35,7 @@ typedef struct _rtpghi_tilde {
 	t_float do_causal_pd;
 	t_symbol *window_type_pd;
 	rtpghi_state* sta_pd;
-	complex *c;
+	ltfat_complex *c;
 	ltfat_int blocksize;
     t_float f;
 } t_rtpghi_tilde;
@@ -47,7 +48,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	t_sample *out1= (t_sample *) (w[4]);
 	int            n =             (int)(w[5]);
 
-	complex *c = (complex *) x->c;
+	ltfat_complex *c = (ltfat_complex *) x->c;
 	int e = 0;
 
 	if ((s==NULL) || ((x->sta_pd)==NULL)) {
