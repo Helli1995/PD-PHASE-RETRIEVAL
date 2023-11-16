@@ -2,7 +2,6 @@
 //
 
 #include <m_pd.h>
-#include <phaseret.h>
 #include <ltfat.h>
 
 #if !defined(PD_FLOATSIZE)
@@ -11,18 +10,20 @@
 #endif
 
 #if PD_FLOATSIZE == 32
-#define phaseret_rtpghi_init phaseret_rtpghi_init_s
-#define phaseret_rtpghi_done phaseret_rtpghi_done_s
-#define phaseret_rtpghi_set_tol phaseret_rtpghi_set_tol_s
-#define phaseret_rtpghi_set_causal phaseret_rtpghi_set_causal_s
-#define phaseret_rtpghi_execute phaseret_rtpghi_execute_s
+#define LTFAT_SINGLE
 
 #elif PD_FLOATSIZE == 64
-#define phaseret_rtpghi_init phaseret_rtpghi_init_d
-#define phaseret_rtpghi_done phaseret_rtpghi_done_d
-#define phaseret_rtpghi_set_tol phaseret_rtpghi_set_tol_d
-#define phaseret_rtpghi_set_causal phaseret_rtpghi_set_causal_d
-#define phaseret_rtpghi_execute phaseret_rtpghi_execute_d
+#define LTFAT_DOUBLE
+
+#include <phaseret.h>
+
+#define rtpghi_init PHASERET_NAME(rtpghi_init)
+#define rtpghi_done PHASERET_NAME(rtpghi_done)
+#define rtpghi_set_tol PHASERET_NAME(rtpghi_set_tol)
+#define rtpghi_set_causal PHASERET_NAME(rtpghi_set_causal)
+#define rtpghi_execute PHASERET_NAME(rtpghi_execute)
+#define complex LTFAT_NAME(complex)
+#define rtpghi_state PHASERET_NAME(rtpghi_state)
 #endif
 
 static t_class *rtpghi_tilde_class;
@@ -32,8 +33,8 @@ typedef struct _rtpghi_tilde {
 	t_float tol_pd;
 	t_float do_causal_pd;
 	t_symbol *window_type_pd;
-	phaseret_rtpghi_state_s* sta_pd;
-	ltfat_complex_s *c;
+	rtpghi_state* sta_pd;
+	complex *c;
 	ltfat_int blocksize;
     t_float f;
 } t_rtpghi_tilde;
@@ -46,7 +47,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	t_sample *out1= (t_sample *) (w[4]);
 	int            n =             (int)(w[5]);
 
-	ltfat_complex_s *c = (ltfat_complex_s *) x->c;
+	complex *c = (complex *) x->c;
 	int e = 0;
 
 	if ((s==NULL) || ((x->sta_pd)==NULL)) {
@@ -55,7 +56,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	
 	else
 	{
-		e = phaseret_rtpghi_execute(x->sta_pd, s, c);
+		e = rtpghi_execute(x->sta_pd, s, c);
 
 		if (e == 0) {
 			while (n--) {
@@ -71,8 +72,7 @@ t_int *rtpghi_tilde_perform(t_int *w) {
  return (w+6);
 }
 
-void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
-{
+void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp) {
 	//post("start DSP");
     ltfat_int M = (ltfat_int) sp[0]->s_n;
 	if ((x->blocksize) == 0) {
@@ -109,13 +109,13 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
 	
 	if (M != (x->blocksize)) {
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
-		phaseret_rtpghi_done(&(x->sta_pd));
+		rtpghi_done(&(x->sta_pd));
 		x->sta_pd=NULL;
 		x->blocksize = M;
 	}
 	
 	if  (x->sta_pd == NULL) {
-		init_s = phaseret_rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
+		init_s = rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
 		
 		if (init_s == 0) {
 			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
@@ -139,31 +139,30 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp)
    dsp_add(rtpghi_tilde_perform, 5,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
 }
 
-void rtpghi_tilde_causal(t_rtpghi_tilde *x, t_floatarg f)
-{
+void rtpghi_tilde_causal(t_rtpghi_tilde *x, t_floatarg f) {
+	
 	if ((f == 0.0) || (f == 1.0)) {
 		int causal = f;
-		phaseret_rtpghi_set_causal(x->sta_pd, causal);
+		rtpghi_set_causal(x->sta_pd, causal);
 	}
 	else {
 		pd_error(x, "failed to set (a)causal, input has to be either 0 or 1, but got: %f", f);
 	}
 }
-void rtpghi_tilde_tol(t_rtpghi_tilde *x, t_floatarg f)
-{
+void rtpghi_tilde_tol(t_rtpghi_tilde *x, t_floatarg f) {
+	
 	if ((f > 0.0) && (f < 1.0)) {
 		double tol = f;
-		phaseret_rtpghi_set_tol(x->sta_pd, tol);
+		rtpghi_set_tol(x->sta_pd, tol);
 	}
 	else {
 		pd_error(x, "failed to set tol, input float has to be  > 0 && <1, but got: %f", f);
 	}
 }
 
-void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f)
-{
+void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f) {
 	if ((f > 0.0) && (f <= x->blocksize)) {
-		phaseret_rtpghi_done(&(x->sta_pd));
+		rtpghi_done(&(x->sta_pd));
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		x->sta_pd=NULL;
 		x->ol_pd = f;
@@ -185,7 +184,7 @@ void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f)
 		int do_causal = x->do_causal_pd;
 		int init_s;
 		ltfat_int w = 1;
-		init_s = phaseret_rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
+		init_s = rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
 		if (init_s == 0) {
 			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
 		}
@@ -198,15 +197,14 @@ void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f)
 	}
 }
 
-void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s)
-{
+void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s) {
 		
 	LTFAT_FIRWIN window;
 	window = ltfat_str2firwin(s.s_name);
 	LTFAT_FIRWIN check = -6;
 	if (window != check) {
 		
-		phaseret_rtpghi_done(&(x->sta_pd));
+		rtpghi_done(&(x->sta_pd));
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		x->sta_pd=NULL;
 		ltfat_int M = x->blocksize;
@@ -221,7 +219,7 @@ void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s)
 		int do_causal = x->do_causal_pd;
 		int init_s;
 		ltfat_int w = 1;
-		init_s = phaseret_rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
+		init_s = rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
 		if (init_s == 0) {
 			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
 		}
@@ -243,10 +241,8 @@ void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s)
 	phaseret_rtpghi_reset_s(x->sta_pd, &schan);
 }*/
 
-void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
-{
-
-  t_rtpghi_tilde *x = (t_rtpghi_tilde *)pd_new(rtpghi_tilde_class);
+void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
+	t_rtpghi_tilde *x = (t_rtpghi_tilde *)pd_new(rtpghi_tilde_class);
 	x->window_type_pd = NULL;
 	x->ol_pd = 4.0;
 	x->tol_pd = 0.000001;
@@ -276,12 +272,11 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv)
   return (void *)x;
 }
 
-void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp)
-{
-	if (x->sta_pd != NULL){
-		
+void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp) {
+	
+	if (x->sta_pd != NULL) {
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
-		phaseret_rtpghi_done(&(x->sta_pd));
+		rtpghi_done(&(x->sta_pd));
 		freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
 	}
 }
@@ -314,5 +309,5 @@ void rtpghi_tilde_setup(void) {
 	class_addmethod(rtpghi_tilde_class,
 				   (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
 	CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
-	}
+}
 
