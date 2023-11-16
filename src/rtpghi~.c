@@ -201,8 +201,8 @@ void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f)
 void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s)
 {
 		
-		LTFAT_FIRWIN window;
-		window = ltfat_str2firwin(s.s_name);
+	LTFAT_FIRWIN window;
+	window = ltfat_str2firwin(s.s_name);
 	LTFAT_FIRWIN check = -6;
 	if (window != check) {
 		
@@ -210,9 +210,11 @@ void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s)
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		x->sta_pd=NULL;
 		ltfat_int M = x->blocksize;
+		
 		if ((x->blocksize) == 0) {
 			(x->blocksize) = M;
 		}
+		
 		double gamma = phaseret_firwin2gamma(window, M);
 		ltfat_int a = M/(x->ol_pd);
 		double tol = x->tol_pd;
@@ -312,6 +314,5 @@ void rtpghi_tilde_setup(void) {
 	class_addmethod(rtpghi_tilde_class,
 				   (t_method)rtpghi_tilde_dsp, gensym("dsp"), A_CANT, 0);
 	CLASS_MAINSIGNALIN(rtpghi_tilde_class, t_rtpghi_tilde, f);
-	class_sethelpsymbol(rtpghi_tilde_class, gensym("rtpghi~"));
 	}
 
