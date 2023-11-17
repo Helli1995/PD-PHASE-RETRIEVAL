@@ -30,7 +30,7 @@
 static t_class *rtpghi_tilde_class;
 typedef struct _rtpghi_tilde {
 	t_object  x_obj;
-	t_float ol_pd;
+	t_float overlap;
 	t_float tol_pd;
 	t_float do_causal_pd;
 	t_symbol *window_type_pd;
@@ -71,60 +71,57 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 	}
 
  return (w+6);
+	
+}
+
+
+void rtpghi_tilde_recreatestate(t_rtpghi_tilde*x, t_symbol window, int blocksize, int overlap) {
+	if(x->sta_pd && (window.s_name != x->window_type_pd->s_name || blocksize != x->blocksize || overlap != x->overlap)) {
+		rtpghi_done(&(x->sta_pd));
+		x->sta_pd=NULL;
+		post("sta zeroed");
+	}
+	x->blocksize = blocksize;
+	x->overlap = overlap;
+	double tol = x->tol_pd;
+	int do_causal = x->do_causal_pd;
+	*(x->window_type_pd)=window;
+	LTFAT_FIRWIN win;
+	double gamma;
+	
+	if (x->window_type_pd != NULL) {
+		win = ltfat_str2firwin(x->window_type_pd->s_name);
+		post("blib");
+	}
+	else {
+		//const char win_[8] = "hanning";
+		win = ltfat_str2firwin("hann");
+		ltfat_int w = 1;
+		gamma = phaseret_firwin2gamma(win, x->blocksize);
+		if (rtpghi_init(w, blocksize/(x->overlap), x->blocksize, gamma, tol, do_causal, &(x->sta_pd))) {
+			pd_error(x, "failed to init state");
+			x->sta_pd=NULL;
+			}
+	}
+		
+	if (!x->sta_pd) {
+		ltfat_int w = 1;
+		gamma = phaseret_firwin2gamma(win, x->blocksize);
+		if (rtpghi_init(w, blocksize/(x->overlap), x->blocksize, gamma, tol, do_causal, &(x->sta_pd))) {
+			pd_error(x, "failed to init state");
+			x->sta_pd=NULL;
+			}
+		}
 }
 
 void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp) {
 	//post("start DSP");
-    ltfat_int M = (ltfat_int) sp[0]->s_n;
+	ltfat_int M = (ltfat_int) sp[0]->s_n;
 	if ((x->blocksize) == 0) {
 		(x->blocksize) = M;
 	}
-    
-    //post("stft_length [M]: %d\n", M);
-	const char win_[4] = "hann";
-	LTFAT_FIRWIN window;
 	
-	if (x->window_type_pd != NULL) {
-		window = ltfat_str2firwin(x->window_type_pd->s_name);
-	}
-	else {
-		window = ltfat_str2firwin(win_);
-	}
-	
-    double gamma = phaseret_firwin2gamma(window, M);
-    //post("window normalization parameter [gamma]: %f\n", gamma);
-    
-    ltfat_int a = M/(x->ol_pd);
-    //post("hopsize: %d\n", a);
-    
-    double tol = x->tol_pd;
-    //post("Tolerance [tol]: %f\n", tol);
-    
-    int do_causal = x->do_causal_pd;
-    //post("Causal yes=1, no=0, [do_causal]: %d\n", do_causal);
-	
-	
-	// Check for existing ltfat_state (to do: implement init only when input param. changes)
-	int init_s;
-	ltfat_int w = 1;
-	
-	if (M != (x->blocksize)) {
-		post("destroyed state at adrr: %p\n", &(x->sta_pd));
-		rtpghi_done(&(x->sta_pd));
-		x->sta_pd=NULL;
-		x->blocksize = M;
-	}
-	
-	if  (x->sta_pd == NULL) {
-		init_s = rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
-		
-		if (init_s == 0) {
-			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
-		}
-		else {
-			pd_error(x, "failed to init, status %d", init_s);
-		}
-	}
+	rtpghi_tilde_recreatestate(x, *(x->window_type_pd), x->blocksize, x->overlap);
 	
 	if (x->c != NULL) {
 		freebytes(x->c, M * sizeof *(x->c));
@@ -134,8 +131,6 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp) {
 		x->c = getbytes(M * sizeof *(x->c));
 	}
 	
-   //post("length of c[] [bit]: %d", M * sizeof *(x->c));
-   //post("s_n: %d", sp[0]->s_n);
    
    dsp_add(rtpghi_tilde_perform, 5,x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
 }
@@ -163,35 +158,7 @@ void rtpghi_tilde_tol(t_rtpghi_tilde *x, t_floatarg f) {
 
 void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f) {
 	if ((f > 0.0) && (f <= x->blocksize)) {
-		rtpghi_done(&(x->sta_pd));
-		post("destroyed state at adrr: %p\n", &(x->sta_pd));
-		x->sta_pd=NULL;
-		x->ol_pd = f;
-		ltfat_int M = x->blocksize;
-		if ((x->blocksize) == 0) {
-			(x->blocksize) = M;
-		}
-		const char win_[4] = "hann";
-		LTFAT_FIRWIN window;
-		if (x->window_type_pd != NULL) {
-			window = ltfat_str2firwin(x->window_type_pd->s_name);
-		}
-		else {
-			window = ltfat_str2firwin(win_);
-		}
-		double gamma = phaseret_firwin2gamma(window, M);
-		ltfat_int a = M/(x->ol_pd);
-		double tol = x->tol_pd;
-		int do_causal = x->do_causal_pd;
-		int init_s;
-		ltfat_int w = 1;
-		init_s = rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
-		if (init_s == 0) {
-			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
-		}
-		else {
-			pd_error(x, "failed to init, status %d", init_s);
-		}
+		rtpghi_tilde_recreatestate(x, *(x->window_type_pd), x->blocksize, f);
 	}
 	else {
 		pd_error(x, "failed to set overlap, input float has to be  > 0 && <= blocksize, but got: %f", f);
@@ -200,52 +167,13 @@ void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f) {
 
 void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s) {
 		
-	LTFAT_FIRWIN window;
-	window = ltfat_str2firwin(s.s_name);
-	LTFAT_FIRWIN check = -6;
-	if (window != check) {
-		
-		rtpghi_done(&(x->sta_pd));
-		post("destroyed state at adrr: %p\n", &(x->sta_pd));
-		x->sta_pd=NULL;
-		ltfat_int M = x->blocksize;
-		
-		if ((x->blocksize) == 0) {
-			(x->blocksize) = M;
-		}
-		
-		double gamma = phaseret_firwin2gamma(window, M);
-		ltfat_int a = M/(x->ol_pd);
-		double tol = x->tol_pd;
-		int do_causal = x->do_causal_pd;
-		int init_s;
-		ltfat_int w = 1;
-		init_s = rtpghi_init(w, a , M, gamma, tol, do_causal, &(x->sta_pd));
-		if (init_s == 0) {
-			post("initialised rtpghi plan at adress: %p\n", &(x->sta_pd));
-		}
-		else {
-			pd_error(x, "failed to init, status %d", init_s);
-		}
-	}
-		else {
-			pd_error(x, "failed to set new window, type not supported: %s", s.s_name);
-		}
+	rtpghi_tilde_recreatestate(x, s, x->blocksize, x->overlap);
 }
-
-/*void rtpghi_tilde_reset(t_rtpghi_tilde *x, t_sample)
-{
-	ltfat_int N = x->blocksize;
-	ltfat_int M2 = N/2+1;
-	ltfat_int w = 1;
-	const LTFAT_REAL* schan = s + w * N * M2;
-	phaseret_rtpghi_reset_s(x->sta_pd, &schan);
-}*/
 
 void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
 	t_rtpghi_tilde *x = (t_rtpghi_tilde *)pd_new(rtpghi_tilde_class);
 	x->window_type_pd = NULL;
-	x->ol_pd = 4.0;
+	x->overlap = 4.0;
 	x->tol_pd = 0.000001;
 	x->do_causal_pd = 1.0;
 	
@@ -257,17 +185,17 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
 		case 2:
 			x->tol_pd = atom_getfloat(argv+1);
 		case 1:
-			x->ol_pd = atom_getfloat(argv);
+			x->overlap = atom_getfloat(argv);
 			break;
 		case 0:
 			break;
 	}
 
-	post("win_def %p, do_causal %f, tol %f, ol %f", x->window_type_pd, x->do_causal_pd, x->tol_pd, x->ol_pd);
+	post("win_def %p, do_causal %f, tol %f, ol %f", x->window_type_pd, x->do_causal_pd, x->tol_pd, x->overlap);
     x->sta_pd=NULL;
     x->c = NULL;
 	x->blocksize = 0;
-    
+	
     outlet_new(&x->x_obj, &s_signal);
     outlet_new(&x->x_obj, &s_signal);
   return (void *)x;
@@ -290,8 +218,7 @@ void rtpghi_tilde_setup(void) {
                               CLASS_DEFAULT,
                                A_GIMME,
                               0);
-	//to do: maybe change tol_pd on runtime (while DSP turned ON)
-	//class_addbang  (rtpghi_tilde_class, rtpghi_tilde_reset);
+
 	class_addmethod(rtpghi_tilde_class,
 			(t_method)rtpghi_tilde_causal, gensym("causal"),
 			A_DEFFLOAT, 0);
@@ -299,6 +226,7 @@ void rtpghi_tilde_setup(void) {
 	class_addmethod(rtpghi_tilde_class,
 			(t_method)rtpghi_tilde_tol, gensym("tolerance"),
 			A_DEFFLOAT, 0);
+	
 	class_addmethod(rtpghi_tilde_class,
 			(t_method)rtpghi_tilde_overlap, gensym("overlap"),
 			A_DEFFLOAT, 0);
