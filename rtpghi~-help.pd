@@ -370,7 +370,6 @@ hanning), f 103;
 #X obj 147 80 s block;
 #X obj 175 19 r set;
 #X msg 147 54 set 1024 8 1;
-#X obj 663 191 f;
 #X connect 0 0 16 0;
 #X connect 1 0 15 0;
 #X connect 21 0 17 0;
