@@ -148,7 +148,6 @@ void rtpghi_tilde_tol(t_rtpghi_tilde *x, t_floatarg f) {
 void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f) {
 	if ((f > 0.0) && (f <= x->blocksize)) {
 		rtpghi_tilde_recreatestate(x, x->window, x->blocksize, f);
-		post("overlap change");
 	}
 	else {
 		pd_error(x, "failed to set overlap, input float has to be  > 0 && <= blocksize, but got: %f", f);
@@ -196,7 +195,6 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
 	if (x->window_type_pd == NULL) {
 		//t_symbol window = "hanning";
 		x->window = LTFAT_HANN;
-		post("windowinit");
 	}
 	
     outlet_new(&x->x_obj, &s_signal);
