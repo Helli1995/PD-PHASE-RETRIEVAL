@@ -1,0 +1,10 @@
+#N canvas 794 417 450 300 12;
+#X obj 121 61 inlet;
+#X obj 121 86 s \$0-0;
+#X obj 114 154 r \$0-\$1;
+#X obj 114 179 outlet;
+#X obj 208 124 clone shader \$1 \$0;
+#X obj 247 58 inlet;
+#X connect 0 0 1 0;
+#X connect 2 0 3 0;
+#X connect 5 0 4 0;
