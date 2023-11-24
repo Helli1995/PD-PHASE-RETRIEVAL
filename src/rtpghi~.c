@@ -154,9 +154,9 @@ void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f) {
 	}
 }
 
-void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s) {
+void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol* s) {
 	
-	LTFAT_FIRWIN new_win = ltfat_str2firwin(s.s_name);
+	LTFAT_FIRWIN new_win = ltfat_str2firwin(s->s_name);
 	
 	LTFAT_FIRWIN check = -6;
 	if (new_win == check) {

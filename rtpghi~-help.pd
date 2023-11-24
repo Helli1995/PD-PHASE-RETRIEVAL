@@ -1,4 +1,4 @@
-#N canvas 448 40 925 857 12;
+#N canvas 257 38 925 857 12;
 #N canvas 625 68 760 628 fft-irfft 0;
 #X obj 37 232 rfft~;
 #X obj 62 139 tabreceive~ \$0.hann;
@@ -361,16 +361,18 @@ and "switch" (defaults to 4), f 103;
 #X obj 111 20 loadbang;
 #X obj 147 80 s block;
 #X obj 175 19 r set;
-#X text 109 619 Implemented windows: "hann"="hanning" \, "sqrthann"="cosine"="sine"
-\, "hamming" \, "square"="rect" \, "tria"="triangular"="bartlett" \,
-"sqrttria" \, "blackman" \, "blackman2" \, "ogg"="itersine" \, "truncgauss01"
-;
-#X msg 143 158 window blackman;
-#X msg 147 54 set 1024 8 1;
 #X text 55 747 A higher overlap makes the signal reconstruction way
 better \, recommended 8 or 16;
 #X text 109 573 4 - WINDOW type for the algorithm \, recommended blackman
 (default hanning), f 103;
+#X msg 147 54 set 1024 16 1;
+#X msg 143 158 window hanning;
+#X text 109 619 Implemented windows: "hann"="hanning"="nutall10" \,
+"sqrthann"="cosine"="sine" \, "hamming" \, "nutall01" \, square"="rect"
+\, "tria"="triangular"="bartlett" \, "sqrttria" \, "blackman" \, "blackman2"
+\, "nutall"="nuttall12 \, "ogg"="itersine" \, "nuttall20" \, "nuttall11"
+\, "nuttall02" \, "nutall30" \, "nuttall21" \, "nuttall03" \, truncgauss01"
+;
 #X connect 0 0 14 0;
 #X connect 1 0 13 0;
 #X connect 19 0 15 0;
@@ -386,5 +388,5 @@ better \, recommended 8 or 16;
 #X connect 32 0 24 0;
 #X connect 33 0 38 0;
 #X connect 35 0 38 0;
-#X connect 37 0 1 1;
 #X connect 38 0 34 0;
+#X connect 39 0 1 1;
