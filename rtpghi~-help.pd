@@ -366,13 +366,13 @@ better \, recommended 8 or 16;
 #X text 109 573 4 - WINDOW type for the algorithm \, recommended blackman
 (default hanning), f 103;
 #X msg 147 54 set 1024 16 1;
-#X msg 143 158 window hanning;
 #X text 109 619 Implemented windows: "hann"="hanning"="nutall10" \,
 "sqrthann"="cosine"="sine" \, "hamming" \, "nutall01" \, square"="rect"
 \, "tria"="triangular"="bartlett" \, "sqrttria" \, "blackman" \, "blackman2"
 \, "nutall"="nuttall12 \, "ogg"="itersine" \, "nuttall20" \, "nuttall11"
 \, "nuttall02" \, "nutall30" \, "nuttall21" \, "nuttall03" \, truncgauss01"
 ;
+#X msg 143 158 window hamming;
 #X connect 0 0 14 0;
 #X connect 1 0 13 0;
 #X connect 19 0 15 0;
@@ -389,4 +389,4 @@ better \, recommended 8 or 16;
 #X connect 33 0 38 0;
 #X connect 35 0 38 0;
 #X connect 38 0 34 0;
-#X connect 39 0 1 1;
+#X connect 40 0 1 1;
