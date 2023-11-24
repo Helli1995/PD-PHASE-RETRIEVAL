@@ -74,16 +74,26 @@ t_int *rtpghi_tilde_perform(t_int *w) {
 }
 
 
-void rtpghi_tilde_recreatestate(t_rtpghi_tilde *x, LTFAT_FIRWIN win, ltfat_int blocksize, int overlap) {
-	if(x->sta_pd && (win != x->window || blocksize != x->blocksize || overlap != x->overlap)) {
-		rtpghi_done(&(x->sta_pd));
-		x->sta_pd=NULL;
-		post("sta zeroed");
+void rtpghi_tilde_recreatestate(t_rtpghi_tilde *x, LTFAT_FIRWIN win, ltfat_int blocksize, int overlap, int win_check) {
+	if (win_check == 1) {
+		if(x->sta_pd && (win != x->window || blocksize != x->blocksize || overlap != x->overlap)) {
+			rtpghi_done(&(x->sta_pd));
+			x->sta_pd=NULL;
+			post("sta zeroed");
+		}
+		x->window = win;
+	}
+	else {
+		if(x->sta_pd && (blocksize != x->blocksize || overlap != x->overlap)) {
+			rtpghi_done(&(x->sta_pd));
+			x->sta_pd=NULL;
+			post("sta zeroed");
+		}
 	}
 	if (!x->sta_pd) {
 		ltfat_int w = 1;
 		x->blocksize = blocksize;
-		x->window = win;
+
 		x->overlap = overlap;
 		double tol = x->tol_pd;
 		int do_causal = x->do_causal_pd;
@@ -108,7 +118,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp) {
 		x->window = ltfat_str2firwin(x->window_type_pd->s_name);
 	}
 
-	rtpghi_tilde_recreatestate(x, x->window, x->blocksize, x->overlap);
+	rtpghi_tilde_recreatestate(x, x->window, x->blocksize, x->overlap, 0);
 	
 	if (x->c != NULL) {
 		freebytes(x->c, M * sizeof *(x->c));
@@ -147,23 +157,23 @@ void rtpghi_tilde_tol(t_rtpghi_tilde *x, t_floatarg f) {
 
 void rtpghi_tilde_overlap(t_rtpghi_tilde *x, t_floatarg f) {
 	if ((f > 0.0) && (f <= x->blocksize)) {
-		rtpghi_tilde_recreatestate(x, x->window, x->blocksize, f);
+		rtpghi_tilde_recreatestate(x, x->window, x->blocksize, f, 0);
 	}
 	else {
 		pd_error(x, "failed to set overlap, input float has to be  > 0 && <= blocksize, but got: %f", f);
 	}
 }
 
-void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol s) {
+void rtpghi_tilde_window(t_rtpghi_tilde *x, t_symbol* s) {
 	
-	LTFAT_FIRWIN new_win = ltfat_str2firwin(s.s_name);
+	LTFAT_FIRWIN new_win = ltfat_str2firwin(s->s_name);
 	
 	LTFAT_FIRWIN check = -6;
 	if (new_win == check) {
 		pd_error(x, "failed to set new window type, has to match member of list in the helpfile");
 	}
 		
-	rtpghi_tilde_recreatestate(x, new_win, x->blocksize, x->overlap);
+	rtpghi_tilde_recreatestate(x, new_win, x->blocksize, x->overlap, 1);
 }
 
 void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
