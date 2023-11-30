@@ -1,8 +1,0 @@
-#N canvas 794 417 450 300 12;
-#X obj 121 61 inlet;
-#X obj 121 86 s \$0-0;
-#X obj 114 154 r \$0-\$1;
-#X obj 114 179 outlet;
-#X obj 228 180 clone buffer \$1 \$0;
-#X connect 0 0 1 0;
-#X connect 2 0 3 0;
