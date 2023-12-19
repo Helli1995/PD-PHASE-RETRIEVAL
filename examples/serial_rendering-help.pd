@@ -1,0 +1,122 @@
+#N canvas 416 38 1049 857 12;
+#X declare -lib Gem;
+#X obj 460 10 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X floatatom 736 454 5 0 0 0 - - - 0;
+#X obj 460 28 t f f b;
+#X obj 596 476 square 4;
+#X obj 20 23 tgl 20 0 empty empty empty 0 -10 0 12 #fcfcfc #000000
+#000000 0 1;
+#X msg 20 47 \; pd dsp \$1;
+#X obj 44 23 declare -lib Gem;
+#X msg 14 119 color 1 0 0;
+#N canvas 87 154 247 179 Gem.init 0;
+#X obj 118 46 loadbang;
+#X msg 118 81 reset;
+#X obj 118 113 outlet;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X restore 19 140 pd Gem.init;
+#N canvas 690 294 682 322 gemwin 0;
+#X obj 102 122 tgl 15 0 \$0-gemstart \$0-gemstart empty 17 7 0 10 #fcfcfc
+#000000 #000000 0 1;
+#X obj 102 161 r \$0-gemstart;
+#X obj 102 182 select 1 0;
+#X msg 102 214 create \, 1;
+#X msg 177 215 destroy;
+#X obj 102 239 t a;
+#X obj 318 54 inlet;
+#X obj 318 255 gemwin;
+#X obj 318 100 t a a;
+#X obj 318 287 outlet;
+#X obj 350 128 route create destroy;
+#X obj 350 150 t b;
+#X msg 350 172 1;
+#X obj 390 150 t b;
+#X msg 390 172 0;
+#X obj 350 195 t f;
+#X msg 350 219 set \$1;
+#X text 118 122 rendering;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 2 1 4 0;
+#X connect 3 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 8 0;
+#X connect 6 0 8 0;
+#X connect 7 0 9 0;
+#X connect 8 0 7 0;
+#X connect 8 1 10 0;
+#X connect 10 0 11 0;
+#X connect 10 1 13 0;
+#X connect 11 0 12 0;
+#X connect 12 0 15 0;
+#X connect 13 0 14 0;
+#X connect 14 0 15 0;
+#X connect 15 0 16 0;
+#X connect 16 0 0 0;
+#X coords 0 -1 1 1 85 40 1 100 100;
+#X restore 15 162 pd gemwin;
+#X obj 596 453 rotateXYZ 0 180 90;
+#X obj 434 339 t a a;
+#X obj 435 317 alpha;
+#X obj 456 253 tgl 20 0 empty empty empty 0 -10 0 12 #fcfcfc #000000
+#000000 0 1;
+#X floatatom 527 30 5 0 0 0 - - - 0;
+#X obj 596 376 pix_texture \; quality 1 \; repeat 0 \; rectangle 0
+;
+#X obj 481 112 metro 10;
+#X obj 435 295 gemhead 50;
+#X msg 713 258 0 x 1 \, 0 size 2 \, 0 sigma \$1 \, 0 direc 0;
+#X floatatom 713 233 5 0 0 0 - - - 0;
+#X obj 520 209 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 517 179 click to change pix_object;
+#X msg 594 232 dimen 1000 1000;
+#X msg 260 678 shadernumber uniformname uniformvalue;
+#X text 465 568 Outlets: Outlet 1: Dataoutput (type gem_state) Outlet
+2: ID of last buffer to map onto texture outside the abstraction;
+#X msg 744 297 0;
+#X obj 516 296 serial_rendering 1 512 512 1;
+#X text 13 214 Description: This serial abstraction loads glsl fragment
+shaders in a chain (including the necessary glsl program \, gemframebuffers
+and textures). The purpose is to use it as chain of shader effects
+and order them in any way you want. Arguments: 1 Number of shaders
+(buffers \, textures etc...) 2 Dimension of the buffer \, etc. in x-direction*
+3 Dimension of the buffer \, etc. in y-direction* 4 Define own shader-names
+1/0 (default 0). Shaders can be loaded automatically \; if set to 0
+\, the names of the shaders must follow a naming convention in this
+case: first loaded shader must be named "shader-0".frag \, second "shader-1"
+and so on. If set to 1 \, shader names for each position in the chain
+can be defined manually. In general \, a fragment and vertex shader
+program with the same name (e.g. name.frag \, name.vert) have to exist
+in the same directory as the abstraction. For more information about
+the use of framebuffers and shaders have a look at the glsl examples
+in the Gem examples directory. Inlets: Inlet 1: Force the rendering
+via [bang( \, send 1 to open the input data subpatch Inlet 2: Change
+the dimension Inlet Inlet 3: Send uniform variables to the shader \,
+specified by the first argument in the message Inlet 4: Destination
+for fragment shader in rendering chain \, if argument 4 is set to 1
+, f 59;
+#X connect 0 0 2 0;
+#X connect 2 0 17 0;
+#X connect 2 1 16 0;
+#X connect 2 2 22 0;
+#X connect 4 0 5 0;
+#X connect 7 0 9 0;
+#X connect 8 0 9 0;
+#X connect 10 0 3 0;
+#X connect 11 1 15 0;
+#X connect 12 0 11 0;
+#X connect 13 0 12 0;
+#X connect 14 0 16 1;
+#X connect 15 0 10 0;
+#X connect 15 1 1 0;
+#X connect 16 0 26 0;
+#X connect 17 0 12 0;
+#X connect 18 0 26 2;
+#X connect 19 0 18 0;
+#X connect 20 0 26 0;
+#X connect 22 0 26 1;
+#X connect 25 0 26 3;
+#X connect 26 1 15 1;
