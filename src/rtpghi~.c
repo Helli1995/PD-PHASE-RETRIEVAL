@@ -108,8 +108,9 @@ void rtpghi_tilde_recreatestate(t_rtpghi_tilde *x, LTFAT_FIRWIN win, ltfat_int b
 }
 
 void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp) {
-	//post("start DSP");
+
 	ltfat_int M = (ltfat_int) sp[0]->s_n;
+	
 	if ((x->blocksize) == 0) {
 		(x->blocksize) = M;
 	}
@@ -118,7 +119,7 @@ void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp) {
 		x->window = ltfat_str2firwin(x->window_type_pd->s_name);
 	}
 
-	rtpghi_tilde_recreatestate(x, x->window, x->blocksize, x->overlap, 0);
+	rtpghi_tilde_recreatestate(x, x->window, M, x->overlap, 0);
 	
 	if (x->c != NULL) {
 		freebytes(x->c, M * sizeof *(x->c));
