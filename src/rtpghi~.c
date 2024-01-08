@@ -199,7 +199,7 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
 	}
 
 	post("win_def %p, do_causal %f, tol %f, ol %f", x->window_type_pd, x->do_causal_pd, x->tol_pd, x->overlap);
-    x->sta_pd=NULL;
+    x->sta_pd = NULL;
     x->c = NULL;
 	x->blocksize = 0;
 	
@@ -209,8 +209,8 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
 	}
 	
     outlet_new(&x->x_obj, &s_signal);
-    outlet_new(&x->x_obj, &s_signal);
-  return (void *)x;
+	outlet_new(&x->x_obj, &s_signal);
+	return (void *)x;
 }
 
 void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp) {
@@ -218,6 +218,7 @@ void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp) {
 	if (x->sta_pd != NULL) {
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		rtpghi_done(&(x->sta_pd));
+		x->sta_pd = NULL;
 		freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
 	}
 }
