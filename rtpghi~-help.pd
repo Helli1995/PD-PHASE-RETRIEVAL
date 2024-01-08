@@ -1,4 +1,4 @@
-#N canvas 257 38 925 857 12;
+#N canvas 518 61 925 857 12;
 #N canvas 625 68 760 628 fft-irfft 0;
 #X obj 37 232 rfft~;
 #X obj 62 139 tabreceive~ \$0.hann;
@@ -81,7 +81,7 @@
 #X connect 21 0 22 0;
 #X connect 21 1 17 0;
 #X restore 334 250 pd fft-irfft;
-#N canvas 752 162 760 628 fft-rtpghi 1;
+#N canvas 752 162 760 628 fft-rtpghi 0;
 #X obj 44 352 rfft~;
 #X obj 43 375 *~;
 #X obj 77 374 *~;
@@ -203,10 +203,6 @@ Průša and Peter L. Søndergaard in Brno in 2016 https://www.dafx.de/paper-arch
 , f 114;
 #X text 36 293 signal from magnitude using rtpghi~;
 #X text 532 300 original signal;
-#X text 28 411 The rtpghi~ PD-Object makes use of their backend c-libraries
-libltfat and libphaseret to recreate the phase of a signal with only
-the stft-magnitude available \, shortly speaking "phase retrieval".
-, f 114;
 #X text 110 531 2 - Relative TOLERANCE of coefficients (defaults to
 1e-06);
 #X text 109 552 3 - CAUSAL Using zero delay (1) or one frame delay
@@ -373,20 +369,24 @@ better \, recommended 8 or 16;
 \, "nuttall02" \, "nutall30" \, "nuttall21" \, "nuttall03" \, truncgauss01"
 ;
 #X msg 143 158 window hamming;
-#X connect 0 0 14 0;
-#X connect 1 0 13 0;
-#X connect 19 0 15 0;
-#X connect 21 0 32 0;
-#X connect 21 1 22 0;
+#X text 28 411 The rtpghi~ PD-Object makes use of their backend c-libraries
+libltfat and libphaseret to recreate the phase of a signal with only
+the stft-magnitude available \, shortly speaking of "phase retrieval".
+, f 114;
+#X connect 0 0 13 0;
+#X connect 1 0 12 0;
+#X connect 18 0 14 0;
+#X connect 20 0 31 0;
+#X connect 20 1 21 0;
+#X connect 21 0 22 0;
 #X connect 22 0 23 0;
-#X connect 23 0 24 0;
-#X connect 25 0 21 0;
-#X connect 28 0 0 0;
-#X connect 28 0 1 0;
-#X connect 28 0 19 0;
-#X connect 30 0 28 0;
-#X connect 32 0 24 0;
-#X connect 33 0 38 0;
-#X connect 35 0 38 0;
-#X connect 38 0 34 0;
-#X connect 40 0 1 1;
+#X connect 24 0 20 0;
+#X connect 27 0 0 0;
+#X connect 27 0 1 0;
+#X connect 27 0 18 0;
+#X connect 29 0 27 0;
+#X connect 31 0 23 0;
+#X connect 32 0 37 0;
+#X connect 34 0 37 0;
+#X connect 37 0 33 0;
+#X connect 39 0 1 1;
