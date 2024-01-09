@@ -38,6 +38,7 @@ typedef struct _rtpghi_tilde {
 	ltfat_complex *c;
 	ltfat_int blocksize;
 	LTFAT_FIRWIN window;
+	int audio_size;
     t_float f;
 } t_rtpghi_tilde;
 
@@ -110,6 +111,7 @@ void rtpghi_tilde_recreatestate(t_rtpghi_tilde *x, LTFAT_FIRWIN win, ltfat_int b
 void rtpghi_tilde_dsp(t_rtpghi_tilde *x, t_signal **sp) {
 
 	ltfat_int M = (ltfat_int) sp[0]->s_n;
+	x->audio_size = sp[0]->s_n;
 	
 	if ((x->blocksize) == 0) {
 		(x->blocksize) = M;
@@ -213,13 +215,13 @@ void *rtpghi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
 	return (void *)x;
 }
 
-void rtpghi_tilde_free(t_rtpghi_tilde *x, t_signal **sp) {
+void rtpghi_tilde_free(t_rtpghi_tilde *x) {
 	
 	if (x->sta_pd != NULL) {
 		post("destroyed state at adrr: %p\n", &(x->sta_pd));
 		rtpghi_done(&(x->sta_pd));
 		x->sta_pd = NULL;
-		freebytes(x->c, (sp[0]->s_n) * sizeof *(x->c));
+		freebytes(x->c, (x->audio_size) * sizeof *(x->c));
 	}
 }
 
