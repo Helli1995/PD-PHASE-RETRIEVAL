@@ -1,3 +1,7 @@
+//inspired by FabriceNeyret2
+// https://www.shadertoy.com/view/XddfRH (22.01.2024)
+
+
 uniform sampler2D MyTex;
 uniform float dimen_1;
 uniform float dimen_2;
@@ -19,7 +23,7 @@ vec2 displace(vec2 U, float amp, float scale) {
 }
 // --------------------------------------------------------
 
-#define hash22(p)  fract( 18.5453 * sin( (p) * mat2(127.1,311.7,269.5,183.3)) )
+#define hash22(p)  fract( 18.5453 * sin( (p) * mat2(127.1,311.7,269.5,183.3)))
 vec2 noise2(vec2 p) {
 	vec2 i = floor(p);
 	vec2 f = fract(p); f = f*f*(3.-2.*f); // smoothstep

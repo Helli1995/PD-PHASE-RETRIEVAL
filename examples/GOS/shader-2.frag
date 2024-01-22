@@ -1,13 +1,13 @@
+//uniform float strength;
+/**
+ * Edge Detection: 834144373's https://www.shadertoy.com/view/MdGGRt
+ */
+
 uniform sampler2D MyTex;
 uniform float dimen_1;
 uniform float dimen_2;
 uniform float th;
 uniform float size_e;
-//uniform float strength;
-/**
- * Edge Detection: 834144373's https://www.shadertoy.com/view/MdGGRt
- * Bilateral Filter: https://www.shadertoy.com/view/4dfGDH
- */
 
 float sigmoid(float a, float f) {
 	return 1.0 / (1.0 + exp(-f * a));

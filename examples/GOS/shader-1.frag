@@ -1,3 +1,6 @@
+//inspired by Ville-Veikko Urrila
+// https://blog.innogames.com/shader-exploration-the-art-of-blurring/
+
 const float M_Pi = 3.1415926535897932384626433832795;
 uniform sampler2D MyTex;
 uniform float dimen_1;
