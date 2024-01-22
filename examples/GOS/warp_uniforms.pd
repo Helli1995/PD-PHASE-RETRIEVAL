@@ -1,0 +1,12 @@
+#N canvas 784 232 322 218 12;
+#X obj 100 87 hsl 128 15 -100 100 0 1 noise_a empty NOISE_A -2 -8 0
+10 #ff3ad0 #000000 #000000 6325 1;
+#X obj 99 128 hsl 128 15 -100 100 0 1 noise_s empty NOISE_S -2 -8 0
+10 #82ff31 #000000 #000000 12700 1;
+#X floatatom 239 84 5 0 0 0 - noise_a - 0;
+#X floatatom 240 124 5 0 0 0 - noise_s - 0;
+#X floatatom 41 131 5 0 0 0 - - - 0;
+#X floatatom 40 86 5 0 0 0 - - - 0;
+#X text 96 51 WARP THE SPECTRUM;
+#X connect 4 0 1 0;
+#X connect 5 0 0 0;
