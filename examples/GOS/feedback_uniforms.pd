@@ -1,0 +1,20 @@
+#N canvas 691 230 322 218 12;
+#X obj 100 87 hsl 128 15 -100 100 0 1 time empty Time -2 -8 0 10 #00faff
+#000000 #000000 1200 1;
+#X floatatom 239 84 5 0 0 0 - time - 0;
+#X floatatom 240 124 5 0 0 0 - reset - 0;
+#X floatatom 40 86 5 0 0 0 - - - 0;
+#X text 96 51 WARP THE SPECTRUM;
+#X obj 40 116 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X obj 40 136 1;
+#X obj 78 136 t b f;
+#X obj 110 159 s reset;
+#X obj 77 160 0;
+#X obj 77 183 s reset;
+#X connect 3 0 0 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 9 0;
+#X connect 7 1 8 0;
+#X connect 9 0 10 0;
