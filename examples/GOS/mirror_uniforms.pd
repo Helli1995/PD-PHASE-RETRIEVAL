@@ -1,0 +1,19 @@
+#N canvas 784 232 322 218 12;
+#X obj 96 99 hsl 128 15 0 1 0 1 feedback empty Feedback -2 -8 0 10
+#ff8300 #000000 #000000 8400 1;
+#X obj 95 140 hsl 128 15 0 400 0 1 num empty Number -2 -8 0 10 #82ff31
+#000000 #000000 2000 1;
+#X floatatom 235 96 5 0 0 0 - noise_a - 0;
+#X floatatom 236 136 5 0 0 0 - noise_s - 0;
+#X floatatom 37 143 5 0 0 0 - - - 0;
+#X floatatom 36 98 5 0 0 0 - - - 0;
+#X text 92 20 Mirror;
+#X obj 94 52 hsl 128 15 0 128 0 1 X empty Position -2 -8 0 10 #faff00
+#000000 #000000 2125 1;
+#X floatatom 233 48 5 0 0 0 - noise_s - 0;
+#X floatatom 34 55 5 0 0 0 - - - 0;
+#X floatatom 103 167 5 0 0 0 - - - 0;
+#X connect 1 0 10 0;
+#X connect 4 0 1 0;
+#X connect 5 0 0 0;
+#X connect 9 0 7 0;
