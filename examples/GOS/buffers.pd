@@ -1,4 +1,4 @@
-#N canvas 381 135 872 760 12;
+#N canvas 719 112 884 873 12;
 #X obj 407 190 gemhead \; 0;
 #X obj 126 111 loadbang;
 #X obj 126 134 \$1;
@@ -10,7 +10,7 @@
 #X obj 587 206 != 0;
 #X obj 381 553 pix_texture \; quality 0 \; repeat 0 \; rectangle 0
 ;
-#X obj 381 616 square 4;
+#X obj 383 686 square 4;
 #X obj 30 206 r dimen;
 #X obj 97 291 translateXYZ 0 0 -4;
 #X obj 97 252 gemframebuffer 2048 64 RGBA32F \; type FLOAT, f 32;
@@ -27,7 +27,7 @@
 #X obj 535 120 + 1;
 #X obj 440 254 t a a;
 #X obj 406 229 t a a;
-#N canvas 88 38 1251 861 shader 1;
+#N canvas 88 38 1251 861 shader 0;
 #X obj 365 536 glsl_program;
 #X obj 455 484 print linking;
 #X obj 339 395 glsl_fragment;
@@ -177,9 +177,9 @@
 #X obj 187 518 spigot;
 #X obj 280 466 \$1;
 #X obj 281 491 ==;
-#X obj 97 317 t b a a a;
-#X obj 184 671 s;
-#X msg 239 632 symbol data-\$1;
+#X obj 98 367 t b a a a;
+#X obj 190 626 s;
+#X msg 240 581 symbol data-\$1;
 #X obj 256 436 t f b f;
 #X obj 307 466 - 1;
 #N canvas 529 434 450 300 input_data~ 0;
