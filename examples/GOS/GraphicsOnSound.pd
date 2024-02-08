@@ -1,9 +1,9 @@
-#N canvas 921 261 560 489 12;
+#N canvas 524 150 560 489 12;
 #X declare -lib Gem;
 #X declare -lib rtpghi~;
 #X obj 39 51 cnv 15 200 200 empty empty Load\\\ Plugin 20 12 0 18 #c6ffc7
 #404040 0;
-#N canvas 236 107 1276 788 selector 0;
+#N canvas 522 460 1276 788 selector 0;
 #X msg 43 83 dir;
 #X obj 42 106 pdcontrol;
 #X msg 45 344 \; pd-edge_detection.pd vis 1;
@@ -168,7 +168,7 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X connect 12 0 10 1;
 #X restore 455 387 pd master;
 #X obj 41 436 hsl 128 15 -3.99 3.99 0 1 read_pos empty Readout_Position
--2 -8 0 10 #fcfcfc #000000 #000000 5800 1;
+-2 -8 0 10 #fcfcfc #000000 #000000 3600 1;
 #X obj 342 55 tgl 20 0 on empty DSP-START 0 -10 0 12 #fcfcfc #000000
 #000000 0 1;
 #X msg 342 84 \; pd dsp \$1;
@@ -250,17 +250,17 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X obj 45 81 vsl 15 128 0.1 1 0 1 a_l empty Level 0 -9 0 10 #ff8300
 #000000 #000000 12700 1;
 #X obj 170 81 vsl 15 128 0.1 1 0 1 s_l empty Level 0 -9 0 10 #ff8300
-#000000 #000000 2300 0;
+#000000 #000000 7100 0;
 #X obj 406 82 vsl 15 128 0 1 0 0 r_l empty Level 0 -9 0 10 #ff8300
 #000000 #000000 0 0;
 #X obj 79 82 vsl 15 128 1 200 0 1 a_t empty Time 0 -9 0 10 #00faff
-#000000 #000000 100 0;
+#000000 #000000 0 0;
 #X obj 210 79 vsl 15 128 1 600 0 1 s_t empty Time 0 -9 0 10 #00faff
-#000000 #000000 600 0;
+#000000 #000000 0 0;
 #X obj 441 82 vsl 15 128 1 600 0 1 r_t empty Time 0 -9 0 10 #00faff
-#000000 #000000 3300 0;
+#000000 #000000 900 0;
 #X obj 298 83 vsl 15 128 1 200 0 1 r_d empty Time 0 -9 0 10 #c6ffc7
-#000000 #000000 800 0;
+#000000 #000000 100 0;
 #X text 46 46 Attack;
 #X text 167 45 Decay;
 #X text 403 42 Release;
@@ -684,9 +684,9 @@ by 1000;
 #X obj 184 412 tgl 15 0 seq_dir empty Reverse_Audio_Playback 17 7 0
 10 #fcfcfc #000000 #000000 0 1;
 #X floatatom 0 399 5 0 0 0 - - - 0;
-#X msg 284 167 2048 128;
 #X msg 204 302 6;
 #X obj 466 212 osc~ 400;
+#X msg 284 167 2048 128;
 #X connect 5 0 6 0;
 #X connect 9 0 8 0;
 #X connect 10 0 8 2;
@@ -694,7 +694,7 @@ by 1000;
 #X connect 13 0 12 0;
 #X connect 20 0 21 0;
 #X connect 21 0 22 0;
-#X connect 21 1 62 0;
+#X connect 21 1 64 0;
 #X connect 22 0 15 0;
 #X connect 23 0 27 0;
 #X connect 26 0 27 1;
@@ -703,5 +703,5 @@ by 1000;
 #X connect 56 0 27 2;
 #X connect 57 0 14 1;
 #X connect 59 0 58 0;
-#X connect 62 0 14 0;
-#X connect 63 0 45 0;
+#X connect 62 0 45 0;
+#X connect 64 0 14 0;

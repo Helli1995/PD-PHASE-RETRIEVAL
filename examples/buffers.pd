@@ -1,4 +1,4 @@
-#N canvas 327 64 896 760 12;
+#N canvas 774 221 896 760 12;
 #X obj 406 190 gemhead \; 0;
 #X obj 126 111 loadbang;
 #X obj 126 134 \$1;
@@ -10,7 +10,7 @@
 #X obj 587 206 != 0;
 #X obj 381 553 pix_texture \; quality 0 \; repeat 0 \; rectangle 0
 ;
-#X obj 381 616 square 4;
+#X obj 381 673 square 4;
 #X obj 62 218 r dimen;
 #X obj 97 291 translateXYZ 0 0 -4;
 #X obj 97 252 gemframebuffer 2048 64 RGBA32F \; type FLOAT, f 32;
@@ -162,7 +162,6 @@
 #N canvas 150 188 663 457 input_data 0;
 #X obj 50 24 inlet;
 #X obj 52 268 outlet;
-#X obj 51 132 pix_image img1.jpg;
 #X obj 181 30 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
 #000000;
 #N canvas 0 22 450 300 openpanel 0;
@@ -177,15 +176,16 @@
 #X connect 4 0 1 0;
 #X connect 4 1 1 0;
 #X restore 181 51 pd openpanel;
-#X msg 181 79 open /Users/maximilianhelligrath/Documents/PD_05_02/img2.jpg
+#X msg 181 79 open /Users/maximilianhelligrath/Documents/GitHub/PD-RTPGHI/examples/pool.jpeg
 ;
 #X text 183 126 Here you can replace the [pix_image] object with any
 kind of Gems pix objects \, that fit into the rendering tree;
-#X connect 0 0 2 0;
-#X connect 2 0 1 0;
+#X obj 51 132 pix_image pool.jpeg;
+#X connect 0 0 6 0;
+#X connect 2 0 3 0;
 #X connect 3 0 4 0;
-#X connect 4 0 5 0;
-#X connect 5 0 2 0;
+#X connect 4 0 6 0;
+#X connect 6 0 1 0;
 #X restore 594 447 pd input_data;
 #X obj 256 436 t f b f;
 #X obj 196 563 print;
