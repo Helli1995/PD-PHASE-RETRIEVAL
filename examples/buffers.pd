@@ -27,7 +27,7 @@
 #X obj 535 120 + 1;
 #X obj 440 254 t a a;
 #X obj 406 229 t a a;
-#N canvas 71 84 1251 671 shader 0;
+#N canvas -197 206 1251 671 shader 1;
 #X obj 345 585 glsl_program;
 #X obj 442 481 print linking;
 #X obj 339 395 glsl_fragment;
@@ -54,8 +54,8 @@
 #X obj 357 229 spigot;
 #X obj 523 57 r fragname-\$1;
 #X obj 526 249 spigot;
-#X msg 521 300 open;
 #X obj 428 90 t b f;
+#X msg 521 300 open \$1;
 #X connect 0 0 10 0;
 #X connect 0 1 5 0;
 #X connect 2 0 0 0;
@@ -80,14 +80,14 @@
 #X connect 19 0 23 0;
 #X connect 20 0 19 0;
 #X connect 20 1 18 0;
-#X connect 21 0 27 0;
+#X connect 21 0 26 0;
 #X connect 22 0 23 1;
 #X connect 23 0 12 0;
 #X connect 24 0 25 0;
-#X connect 25 0 26 0;
-#X connect 26 0 2 0;
-#X connect 27 0 17 0;
-#X connect 27 1 22 0;
+#X connect 25 0 27 0;
+#X connect 26 0 17 0;
+#X connect 26 1 22 0;
+#X connect 27 0 2 0;
 #X restore 378 477 pd shader;
 #N canvas 102 94 1251 671 shader 0;
 #X obj 345 585 glsl_program;

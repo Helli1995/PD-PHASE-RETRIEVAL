@@ -46,8 +46,9 @@
 #X connect 4 0 1 0;
 #X connect 4 1 1 0;
 #X restore 597 156 pd openpanel;
-#X msg 601 192 open /Users/maximilianhelligrath/Documents/PD_05_02/mirror.frag
+#X msg 601 192 open /Users/maximilianhelligrath/Documents/GitHub/PD-RTPGHI/examples/shader-1.frag
 ;
+#X msg 264 208 vis 1 1;
 #X connect 1 0 23 0;
 #X connect 2 0 3 0;
 #X connect 6 0 7 0;
@@ -77,3 +78,4 @@
 #X connect 32 0 33 0;
 #X connect 33 0 34 0;
 #X connect 34 0 28 0;
+#X connect 35 0 4 0;

@@ -16,7 +16,7 @@ vec2 displace(vec2 U, float amp, float scale) {
 	return  U += amp/scale* noise2(U*scale);
 }
 
-#define hash22(p)  fract( 18.5453 * sin( (p) * mat2(127.1,311.7,269.5,183.3)))
+#define hash22(p)  fract( 18.5453 * sin((p) * mat2(127.1,311.7,269.5,183.3)))
 vec2 noise2(vec2 p) {
 	vec2 i = floor(p);
 	vec2 f = fract(p); f = f*f*(3.-2.*f); // smoothstep
