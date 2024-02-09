@@ -1,4 +1,4 @@
-#N canvas 524 150 560 489 12;
+#N canvas 599 145 748 489 12;
 #X declare -lib Gem;
 #X declare -lib rtpghi~;
 #X obj 39 51 cnv 15 200 200 empty empty Load\\\ Plugin 20 12 0 18 #c6ffc7
@@ -168,7 +168,7 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X connect 12 0 10 1;
 #X restore 455 387 pd master;
 #X obj 41 436 hsl 128 15 -3.99 3.99 0 1 read_pos empty Readout_Position
--2 -8 0 10 #fcfcfc #000000 #000000 3600 1;
+-2 -8 0 10 #fcfcfc #000000 #000000 2600 1;
 #X obj 342 55 tgl 20 0 on empty DSP-START 0 -10 0 12 #fcfcfc #000000
 #000000 0 1;
 #X msg 342 84 \; pd dsp \$1;
@@ -250,15 +250,15 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X obj 45 81 vsl 15 128 0.1 1 0 1 a_l empty Level 0 -9 0 10 #ff8300
 #000000 #000000 12700 1;
 #X obj 170 81 vsl 15 128 0.1 1 0 1 s_l empty Level 0 -9 0 10 #ff8300
-#000000 #000000 7100 0;
+#000000 #000000 7500 0;
 #X obj 406 82 vsl 15 128 0 1 0 0 r_l empty Level 0 -9 0 10 #ff8300
 #000000 #000000 0 0;
 #X obj 79 82 vsl 15 128 1 200 0 1 a_t empty Time 0 -9 0 10 #00faff
 #000000 #000000 0 0;
 #X obj 210 79 vsl 15 128 1 600 0 1 s_t empty Time 0 -9 0 10 #00faff
-#000000 #000000 0 0;
+#000000 #000000 100 0;
 #X obj 441 82 vsl 15 128 1 600 0 1 r_t empty Time 0 -9 0 10 #00faff
-#000000 #000000 900 0;
+#000000 #000000 4800 0;
 #X obj 298 83 vsl 15 128 1 200 0 1 r_d empty Time 0 -9 0 10 #c6ffc7
 #000000 #000000 100 0;
 #X text 46 46 Attack;
@@ -668,8 +668,7 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X text 46 214 Select an effect/close the effect;
 #X text 37 353 Select steps for the sequencer;
 #X obj 39 12 declare -lib rtpghi~;
-#X floatatom 251 278 10 1e-08 1000 2 Set\ Tolerance init_tol tolerance
-0;
+#X floatatom 251 278 10 1e-08 1000 2 Set\ Tolerance - tolerance 0;
 #X text 345 260 of Phase Retrieval Algorithm Value on the left is devided
 by 1000;
 #X msg 159 260 160;
@@ -677,7 +676,6 @@ by 1000;
 #X obj 189 176 tgl 20 0 mirror empty Mirror -10 -10 0 10 #c7c6ff #000000
 #000000 0 1;
 #X msg 166 301 15;
-#X msg 363 165 16;
 #X obj 281 392 s no_random;
 #X obj 281 377 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
@@ -685,8 +683,17 @@ by 1000;
 10 #fcfcfc #000000 #000000 0 1;
 #X floatatom 0 399 5 0 0 0 - - - 0;
 #X msg 204 302 6;
-#X obj 466 212 osc~ 400;
-#X msg 284 167 2048 128;
+#X obj 593 123 osc~ 440;
+#X floatatom 603 101 5 0 0 0 - - - 0;
+#X obj 601 38 metro 100;
+#X obj 600 16 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 556 124 *~ 1;
+#X obj 580 84 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 363 165 32;
+#X msg 203 268 1e-06;
+#X msg 284 167 1024 256;
 #X connect 5 0 6 0;
 #X connect 9 0 8 0;
 #X connect 10 0 8 2;
@@ -694,14 +701,20 @@ by 1000;
 #X connect 13 0 12 0;
 #X connect 20 0 21 0;
 #X connect 21 0 22 0;
-#X connect 21 1 64 0;
+#X connect 21 1 70 0;
 #X connect 22 0 15 0;
 #X connect 23 0 27 0;
 #X connect 26 0 27 1;
 #X connect 53 0 26 0;
 #X connect 54 0 26 0;
 #X connect 56 0 27 2;
-#X connect 57 0 14 1;
-#X connect 59 0 58 0;
-#X connect 62 0 45 0;
-#X connect 64 0 14 0;
+#X connect 58 0 57 0;
+#X connect 61 0 45 0;
+#X connect 62 0 66 0;
+#X connect 63 0 62 0;
+#X connect 64 0 67 0;
+#X connect 65 0 64 0;
+#X connect 67 0 66 1;
+#X connect 68 0 14 1;
+#X connect 69 0 51 0;
+#X connect 70 0 14 0;

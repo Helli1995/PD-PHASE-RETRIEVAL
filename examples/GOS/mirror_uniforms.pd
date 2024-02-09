@@ -1,24 +1,24 @@
-#N canvas 1095 262 643 247 12;
+#N canvas 869 262 643 247 12;
 #X obj 96 99 hsl 128 15 0 1 0 1 dry_wet empty Dry/Wet -2 -8 0 10 #ff8300
 #000000 #000000 12700 1;
 #X floatatom 235 96 5 0 0 0 - dry_wet - 0;
-#X floatatom 154 134 5 1 50 0 Number\ of\ Mirrors - num 0;
+#X floatatom 154 134 5 1 200 0 Number\ of\ Mirrors - num 0;
 #X floatatom 36 98 5 0 0 0 - - - 0;
 #X text 91 13 Mirror;
 #X obj 94 52 hsl 128 15 -512 512 0 1 X empty Distance_X -2 -8 0 10
-#faff00 #000000 #000000 5400 1;
+#faff00 #000000 #000000 6333 1;
 #X floatatom 233 48 5 0 0 0 - X - 0;
 #X floatatom 34 55 5 0 0 0 - - - 0;
 #X obj 355 52 hsl 128 15 -100 100 0 1 Y empty Distance_Y -2 -8 0 10
-#faff00 #000000 #000000 6353 1;
+#faff00 #000000 #000000 6382 1;
 #X floatatom 494 48 5 0 0 0 - Y - 0;
 #X floatatom 309 50 5 0 0 0 - - - 0;
-#X obj 351 101 hsl 128 15 -1 1 0 1 x_off empty Offset_Y -2 -8 0 10
-#c6ffc7 #000000 #000000 0 1;
+#X obj 351 101 hsl 128 15 -1 1 0 1 x_off empty Offset_X -2 -8 0 10
+#c6ffc7 #000000 #000000 1375 1;
 #X floatatom 490 97 5 0 0 0 - x_off - 0;
 #X floatatom 305 99 5 0 0 0 - - - 0;
-#X obj 351 141 hsl 128 15 -1 1 0 1 y_off empty Offset_X -2 -8 0 10
-#c6ffc7 #000000 #000000 0 1;
+#X obj 351 141 hsl 128 15 -1 1 0 1 y_off empty Offset_Y -2 -8 0 10
+#c6ffc7 #000000 #000000 3034 1;
 #X floatatom 490 137 5 0 0 0 - y_off - 0;
 #X floatatom 305 139 5 0 0 0 - - - 0;
 #X connect 3 0 0 0;

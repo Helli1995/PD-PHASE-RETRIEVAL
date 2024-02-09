@@ -1,6 +1,7 @@
 //uniform float strength;
 /**
  * Edge Detection: 834144373's https://www.shadertoy.com/view/MdGGRt
+ https://www.shadertoy.com/view/MlG3WG
  */
 
 uniform sampler2D MyTex;
