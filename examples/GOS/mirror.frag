@@ -27,7 +27,7 @@ void main ()
 		for (float i = 1.0; i <= num; i+= 1.) {
 			vec2 reflector = vec2(i*Y, i*X);
 			vec2 mirror = reflect(coord - vec2(x_off,y_off), reflector);
-			color_wet += texture2D(MyTex, mirror+(vec2(x_off,y_off)));
+			color_wet += texture2D(MyTex, mirror+vec2(x_off,y_off));
 		}
 		color_wet = (color_wet/num) * wet;
 		gl_FragColor = color_dry + color_wet;

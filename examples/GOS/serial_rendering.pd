@@ -1,4 +1,4 @@
-#N canvas 484 343 982 641 12;
+#N canvas 484 257 982 641 12;
 #X obj 16 162 s bang-0;
 #X obj 25 48 inlet;
 #X obj 279 444 r id-\$1;
@@ -48,8 +48,7 @@
 #X obj 830 115 t f f;
 #X obj 742 94 unpack f f;
 #X obj 735 355 switch~ 4096 1;
-#X obj 680 223 print;
-#X obj 734 183 f 2048;
+#X obj 710 184 f 2048;
 #X msg 735 231 set \$1 1;
 #X connect 1 0 22 0;
 #X connect 2 0 3 0;
@@ -88,10 +87,10 @@
 #X connect 37 0 38 0;
 #X connect 38 0 41 0;
 #X connect 39 0 42 0;
-#X connect 40 0 45 0;
+#X connect 40 0 44 0;
 #X connect 41 0 40 0;
 #X connect 41 1 43 0;
-#X connect 42 0 45 1;
-#X connect 45 0 46 0;
-#X connect 45 0 44 0;
-#X connect 46 0 43 0;
+#X connect 42 0 44 1;
+#X connect 42 0 45 0;
+#X connect 44 0 45 0;
+#X connect 45 0 43 0;

@@ -1,4 +1,4 @@
-#N canvas 518 61 925 857 12;
+#N canvas 389 66 925 857 12;
 #N canvas 625 68 760 628 fft-irfft 0;
 #X obj 37 232 rfft~;
 #X obj 62 139 tabreceive~ \$0.hann;
@@ -81,7 +81,7 @@
 #X connect 21 0 22 0;
 #X connect 21 1 17 0;
 #X restore 334 250 pd fft-irfft;
-#N canvas 752 162 760 628 fft-rtpghi 0;
+#N canvas 752 162 760 628 fft-rtpghi 1;
 #X obj 44 352 rfft~;
 #X obj 43 375 *~;
 #X obj 77 374 *~;
@@ -90,12 +90,12 @@
 #X obj 395 296 table \$0.hann;
 #X obj 577 472 s \$0.hann;
 #X msg 576 447 cosinesum \$1 0.5 -0.5;
-#X obj 72 305 tabreceive~ \$0.hann;
-#X obj 43 306 *~;
+#X obj 269 227 tabreceive~ \$0.hann;
+#X obj 91 283 *~;
 #X obj 464 221 t a a;
 #X obj 501 274 unpack s f f f;
-#X obj 130 567 tabreceive~ \$0.hann;
-#X obj 101 566 *~;
+#X obj 217 567 tabreceive~ \$0.hann;
+#X obj 188 566 *~;
 #X obj 105 602 outlet~;
 #X obj 43 329 *~ 1;
 #X obj 42 401 +~;
@@ -136,38 +136,38 @@
 #X obj 84 502 /~;
 #X obj 124 505 /~;
 #X obj 566 299 t f f;
-#X msg 120 393 overlap \$1;
+#X msg 218 314 overlap \$1;
 #X obj 395 274 switch~ 1024 4;
 #X obj 417 1 r algorithm;
 #X obj 453 83 f 1;
 #X obj 500 83 f 0;
 #X obj 500 60 t b;
 #X obj 454 60 sel 1;
-#X obj 58 267 inlet~;
+#X obj 36 186 inlet~;
 #X obj 328 42 r block;
 #X obj 331 108 spigot;
 #X obj 417 26 t b f;
 #X obj 410 60 s set;
-#X obj 42 455 rtpghi~ 16 1e-06 0 hann;
 #X obj 65 223 print;
 #X obj 97 77 inlet;
+#X obj 39 302 blackman~;
+#X obj 32 576 blackman~;
+#X obj 42 468 rtpghi~ 16 1e-07 0 blackman;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
 #X connect 0 1 2 0;
 #X connect 0 1 2 1;
 #X connect 1 0 16 0;
 #X connect 2 0 16 1;
-#X connect 3 0 35 0;
-#X connect 4 0 13 0;
+#X connect 3 0 39 0;
+#X connect 4 0 38 0;
 #X connect 7 0 6 0;
 #X connect 8 0 9 1;
-#X connect 9 0 15 0;
 #X connect 10 0 24 0;
 #X connect 10 1 11 0;
 #X connect 11 1 17 0;
 #X connect 11 2 22 0;
 #X connect 12 0 13 1;
-#X connect 13 0 14 0;
 #X connect 15 0 0 0;
 #X connect 16 0 3 0;
 #X connect 17 0 18 0;
@@ -179,7 +179,7 @@
 #X connect 21 0 4 1;
 #X connect 22 0 23 0;
 #X connect 22 1 18 1;
-#X connect 23 0 35 0;
+#X connect 23 0 39 0;
 #X connect 25 0 33 0;
 #X connect 26 0 24 0;
 #X connect 26 0 32 1;
@@ -189,13 +189,16 @@
 #X connect 29 0 26 0;
 #X connect 29 1 28 0;
 #X connect 30 0 9 0;
+#X connect 30 0 37 0;
 #X connect 31 0 32 0;
 #X connect 32 0 10 0;
 #X connect 33 0 34 0;
 #X connect 33 1 29 0;
-#X connect 35 0 20 0;
-#X connect 35 1 21 0;
-#X connect 37 0 35 0;
+#X connect 36 0 39 0;
+#X connect 37 0 15 0;
+#X connect 38 0 14 0;
+#X connect 39 0 20 0;
+#X connect 39 1 21 0;
 #X restore 39 246 pd fft-rtpghi;
 #X text 28 367 Real-Time Spectrogamm Inversion using the Algorithm
 of Real Time Phase Gradient Heap Integration \, introduced by Zdeněk
@@ -361,7 +364,6 @@ and "switch" (defaults to 4), f 103;
 better \, recommended 8 or 16;
 #X text 109 573 4 - WINDOW type for the algorithm \, recommended blackman
 (default hanning), f 103;
-#X msg 147 54 set 1024 16 1;
 #X text 109 619 Implemented windows: "hann"="hanning"="nutall10" \,
 "sqrthann"="cosine"="sine" \, "hamming" \, "nutall01" \, square"="rect"
 \, "tria"="triangular"="bartlett" \, "sqrttria" \, "blackman" \, "blackman2"
@@ -373,6 +375,7 @@ better \, recommended 8 or 16;
 libltfat and libphaseret to recreate the phase of a signal with only
 the stft-magnitude available \, shortly speaking of "phase retrieval".
 , f 114;
+#X msg 147 54 set 2048 32 1;
 #X connect 0 0 13 0;
 #X connect 1 0 12 0;
 #X connect 18 0 14 0;
@@ -386,7 +389,7 @@ the stft-magnitude available \, shortly speaking of "phase retrieval".
 #X connect 27 0 18 0;
 #X connect 29 0 27 0;
 #X connect 31 0 23 0;
-#X connect 32 0 37 0;
-#X connect 34 0 37 0;
-#X connect 37 0 33 0;
-#X connect 39 0 1 1;
+#X connect 32 0 40 0;
+#X connect 34 0 40 0;
+#X connect 38 0 1 1;
+#X connect 40 0 33 0;
