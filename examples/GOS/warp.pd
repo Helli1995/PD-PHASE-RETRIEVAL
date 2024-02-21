@@ -15,7 +15,7 @@
 #X msg 337 162 open \$1/warp.frag;
 #X obj 109 234 r noise_a;
 #X obj 269 226 r noise_s;
-#X msg 270 265 0 NOISE_S \$1;
+#X msg 301 267 0 NOISE_S \$1;
 #X msg 186 265 0 NOISE_A \$1;
 #X connect 0 0 3 1;
 #X connect 1 0 7 0;

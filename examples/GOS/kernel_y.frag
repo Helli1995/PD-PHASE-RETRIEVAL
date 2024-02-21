@@ -15,7 +15,7 @@ float coord = -size;
 //-------------- calculating array parameters ----------------------------------------------------
 vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
 float kernel_sum = 0.;
-float ratio = (array_len - 1.) / (2. * size);
+float ratio = (array_len - 1.) / (2. * size + 1.);
 
 void main() {
 	//--------------- defining the size and direction of the kernel---------------------------
@@ -46,13 +46,15 @@ void main() {
 			float b = myKernel[high];
 
 			float c = a * (1. - weight) + b * weight;
+			c = clamp(c, 0., 1.);
+			
 			//-----------------------------------------------------------------
 			
 			kernel_sum += c;
 			color += (texture2D(MyTex, uv + blur_dir  * ((coord * dist)/texSize))) * c;
 			coord += 1.;
 		}
-		gl_FragColor = color/(kernel_sum);
+		gl_FragColor = clamp((color/kernel_sum), 0., 1.);
 	}
 }
 
