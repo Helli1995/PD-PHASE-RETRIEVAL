@@ -1,4 +1,4 @@
-#N canvas 537 585 872 609 12;
+#N canvas 627 249 872 609 12;
 #X msg 300 293 0 x \$1;
 #X msg 362 292 0 sigma \$1;
 #X msg 451 291 0 size \$1;
