@@ -19,7 +19,7 @@ void main ()
 	
 	vec4 color_dry = texture2D(MyTex, coord)*dry;
 	vec4 color_wet = vec4(0.);
-	if ((num <= 1.0) || (dry < 0.0)) {
+	if ((num < 1.0) || (dry < 0.0)) {
 		gl_FragColor = texture2D(MyTex, coord);
 	}
 	else {
