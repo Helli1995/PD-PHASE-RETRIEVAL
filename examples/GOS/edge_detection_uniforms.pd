@@ -1,12 +1,12 @@
-#N canvas 784 465 691 270 12;
+#N canvas 238 577 691 270 12;
 #X obj 94 105 hsl 128 15 0 100 0 1 sigma empty Sigma -2 -8 0 10 #c6feff
-#000000 #000000 381 1;
+#000000 #000000 254 1;
 #X obj 93 150 hsl 128 15 1 100 0 1 x empty Stepsize -2 -8 0 10 #c6ffc7
 #000000 #000000 0 1;
 #X obj 93 187 hsl 128 15 0 50 0 1 size empty Size -2 -8 0 10 #c7c6ff
 #000000 #000000 254 1;
 #X obj 375 119 hsl 128 15 0 1 0 1 th empty Threshold -2 -8 0 10 #ff8300
-#000000 #000000 8400 1;
+#000000 #000000 5500 1;
 #X obj 374 166 hsl 128 15 1 15 0 1 size_e empty Weight -2 -8 0 10 #faff00
 #000000 #000000 12700 1;
 #X text 85 69 Gaussian BLur Kernel;
@@ -15,14 +15,22 @@
 #X floatatom 232 147 5 0 0 0 - x - 0;
 #X floatatom 231 185 5 0 0 0 - size - 0;
 #X floatatom 43 147 5 0 0 0 - - - 0;
-#X floatatom 43 106 5 0 0 0 - - - 0;
+#X floatatom 41 97 5 0 0 0 - - - 0;
 #X floatatom 43 188 5 0 0 0 - - - 0;
 #X floatatom 515 117 5 0 0 0 - th - 0;
-#X floatatom 513 164 5 0 0 0 - - size_e 0;
+#X floatatom 513 164 5 0 0 0 - size_e - 0;
 #X floatatom 327 164 5 0 0 0 - - - 0;
 #X msg 325 133 15;
+#X obj 38 236 s repeat;
+#X obj 37 215 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 111 217 loadbang;
+#X obj 112 241 0;
 #X connect 10 0 1 0;
 #X connect 11 0 0 0;
 #X connect 12 0 2 0;
 #X connect 15 0 4 0;
 #X connect 16 0 15 0;
+#X connect 18 0 17 0;
+#X connect 19 0 20 0;
+#X connect 20 0 18 0;
