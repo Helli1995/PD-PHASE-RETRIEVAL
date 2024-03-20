@@ -202,7 +202,7 @@ next to each other (first try with two) \, only when enabled;
 #X msg 788 303 env 2;
 #X obj 688 329 pix_texture \; quality 0 \; repeat 0 \; rectangle 0
 ;
-#X obj 479 487 /~ 255;
+#X obj 479 487 /~ 1;
 #X connect 2 0 19 0;
 #X connect 2 1 62 0;
 #X connect 3 0 2 0;
