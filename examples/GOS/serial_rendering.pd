@@ -1,14 +1,14 @@
 #N canvas 357 110 1106 737 12;
 #X obj 16 162 s bang-0;
 #X obj 25 48 inlet;
-#X obj 279 444 r id-\$1;
-#X obj 278 470 outlet tex_id;
+#X obj 183 467 r id-\$1;
+#X obj 182 493 outlet tex_id;
 #X obj 337 676 clone buffers \$1 bang id shader;
 #X obj 440 155 s, f 8;
 #X msg 440 79 \$2 \$3 shader-\$1;
 #X obj 440 105 list split 2;
 #X obj 440 54 inlet shader;
-#X obj 113 466 outlet data;
+#X obj 42 493 outlet data;
 #X obj 89 98 s last;
 #X obj 87 47 loadbang;
 #X obj 88 74 \$1;
@@ -23,7 +23,7 @@
 #000000 0 1;
 #X text 54 219 click to change pix_object;
 #X obj 17 136 route bang;
-#X obj 114 443 r data-\$1;
+#X obj 43 470 r data-\$1;
 #X obj 278 70 t b b b;
 #X obj 371 133 \$4;
 #X obj 371 157 s load;

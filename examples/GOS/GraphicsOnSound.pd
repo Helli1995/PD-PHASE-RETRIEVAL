@@ -1,10 +1,10 @@
-#N canvas 809 188 782 665 12;
+#N canvas 876 100 782 665 12;
 #X declare -lib Gem;
 #X declare -lib rtpghi~;
 #X declare -lib windowing~;
 #X obj 39 51 cnv 15 200 200 empty empty Load\\\ Plugin 20 12 0 18 #c6ffc7
 #404040 0;
-#N canvas 422 338 1276 788 selector 0;
+#N canvas 236 113 1276 788 selector 0;
 #X msg 43 83 dir;
 #X obj 42 106 pdcontrol;
 #X msg 45 344 \; pd-edge_detection.pd vis 1;
@@ -139,7 +139,7 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X restore 41 231 pd selector;
 #X obj 429 428 vsl 15 70 0 1 0 0 vol empty Master_Vol 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
-#N canvas 477 393 450 300 master 0;
+#N canvas 477 393 450 300 master 1;
 #X obj 42 198 *~;
 #X obj 44 266 dac~;
 #X obj 27 31 catch~ sig;
@@ -152,8 +152,11 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X obj 368 88 == 0;
 #X obj 299 25 r adsr;
 #X obj 288 70 vline~;
+#X obj 141 208 env~;
+#X floatatom 150 241 5 0 0 0 - - - 0;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
+#X connect 0 0 12 0;
 #X connect 2 0 4 0;
 #X connect 3 0 0 1;
 #X connect 4 0 0 0;
@@ -165,14 +168,15 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X connect 9 0 7 1;
 #X connect 10 0 11 0;
 #X connect 11 0 6 0;
+#X connect 12 0 13 0;
 #X restore 424 542 pd master;
 #X obj 34 519 hsl 128 15 -3.99 3.99 0 1 read_pos initial_position Readout_Position
--2 -8 0 10 #fcfcfc #000000 #000000 2400 1;
+-2 -8 0 10 #fcfcfc #000000 #000000 6350 1;
 #X obj 342 55 tgl 20 0 on empty DSP-START 0 -10 0 12 #fcfcfc #000000
 #000000 0 1;
 #X msg 342 78 \; pd dsp \$1;
 #X obj 39 31 declare -lib Gem;
-#N canvas 109 500 624 319 audio 0;
+#N canvas 243 600 624 319 audio 1;
 #X obj 131 57 tgl 20 0 empty empty empty 0 -10 0 12 #fcfcfc #000000
 #000000 0 1;
 #N canvas 311 459 404 419 audioplayback 0;
@@ -201,11 +205,13 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X obj 81 141 *~;
 #X obj 79 27 inlet;
 #X obj 193 27 inlet~ audio_in;
+#X obj 217 180 env~;
 #X connect 0 0 1 1;
 #X connect 1 0 5 0;
 #X connect 2 0 1 0;
 #X connect 4 0 0 0;
 #X connect 5 0 3 0;
+#X connect 5 0 8 0;
 #X connect 6 0 5 1;
 #X connect 7 0 5 0;
 #X restore 419 251 pd audio;
@@ -214,7 +220,7 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #000000 #000000;
 #X obj 459 170 tgl 15 0 empty empty Play 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 429 177 vsl 15 50 0 1 0 0 empty empty In-Vol 0 -9 0 10 #fcfcfc
+#X obj 430 177 vsl 15 50 0 10 0 0 empty empty In-Vol 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
 #X floatatom 451 480 5 0 0 0 - - - 0;
 #X obj 451 458 r vol;
@@ -672,7 +678,7 @@ by 1000;
 #X msg 204 370 0.001;
 #X msg 389 429 0;
 #X msg 390 457 1;
-#X msg 288 141 1024 128 8, f 17;
+#X msg 288 141 2048 256 4, f 17;
 #X connect 5 0 6 0;
 #X connect 9 0 8 0;
 #X connect 10 0 8 2;
