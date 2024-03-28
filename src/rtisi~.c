@@ -100,7 +100,7 @@ void rtisi_tilde_recreatestate(t_rtisi_tilde *x, LTFAT_FIRWIN win, ltfat_int blo
 		double look_ahead = x->look_ahead_pd;
 		
 		if (rtisi_init(x->window, x->blocksize, w, blocksize/(x->overlap), x->blocksize, look_ahead, max_iter, &(x->sta_pd))) {
-			pd_error(x, "failed to init state");
+			pd_error(x, "failed to init state, DSP turned off?");
 			x->sta_pd=NULL;
 			}
 		}
@@ -197,7 +197,7 @@ void *rtisi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
 			break;
 	}
 
-	post("win_def %p, do_causal %f, tol %f, ol %f", x->window_type_pd, x->look_ahead_pd, x->max_iter_pd, x->overlap);
+	post("current_window: %p, look_ahead: %f, maximum_iterations: %f, overlap_factor: %f", x->window_type_pd, x->look_ahead_pd, x->max_iter_pd, x->overlap);
     x->sta_pd = NULL;
     x->c = NULL;
 	x->blocksize = 0;
