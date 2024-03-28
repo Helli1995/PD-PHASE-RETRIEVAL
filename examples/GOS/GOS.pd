@@ -1,4 +1,4 @@
-#N canvas 220 40 1292 860 12;
+#N canvas 344 159 1292 860 12;
 #X floatatom 795 368 5 0 0 0 - - - 0;
 #X obj 689 418 square 4;
 #X obj 43 194 t a a;
@@ -162,7 +162,7 @@
 #X obj 513 -67 route dimen;
 #X msg 547 484 causal \$1;
 #X obj 556 458 r causal;
-#X obj 524 553 rifft~;
+#X obj 521 607 rifft~;
 #X obj 406 -65 bang~;
 #X obj 671 -147 inlet~ audio;
 #X obj 45 58 r on;
@@ -176,17 +176,17 @@
 #X obj 404 379 pix_snap 1024 128 \; type FLOAT;
 #X obj 512 -91 r dimensions;
 #X obj 520 656 outlet~;
-#X obj 770 231 block~ 4096 8;
+#X obj 834 236 block~ 4096 8;
 #X msg 987 392 overlap \$1;
 #X obj 540 191 serial_rendering \$1 1024 128 \$2;
 #X obj 621 458 r tolerance;
 #X obj 621 482 / 1000;
 #X msg 620 505 tolerance \$1;
 #X obj 689 395 rotateXYZ 0 180 90;
-#X obj 651 114 blackman~;
+#X obj 672 114 blackman~;
 #X obj 520 631 blackman~;
-#X obj 520 528 rtpghi~ 16 1e-06 0 blackman;
-#X msg 770 207 set \$1 \$2 1;
+#X obj 517 582 rtpghi~ 16 1e-06 0 blackman;
+#X msg 834 212 set \$1 \$2 1;
 #X obj 782 35 t l l l;
 #X obj 916 137 unpack f f;
 #X obj 73 -148 loadbang;
