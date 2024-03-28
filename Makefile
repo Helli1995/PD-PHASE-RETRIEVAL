@@ -4,6 +4,7 @@
 lib.name := rtpghi
 
 rtpghi~.class.sources = src/rtpghi~.c
+rtpghi~.class.sources = src/rtisi~.c
 
 datafiles = rtpghi~-help.pd
 
