@@ -18,7 +18,7 @@
 
 #include <phaseret.h>
 
-//#define rtisi_init PHASERET_NAME(rtisila_init)
+#define rtisi_reset PHASERET_NAME(rtisila_reset)
 #define rtisi_done PHASERET_NAME(rtisila_done)
 #define rtisi_set_lookahead PHASERET_NAME(rtisila_set_lookahead)
 #define rtisi_init PHASERET_NAME(rtisila_init_win)
@@ -75,9 +75,9 @@ t_int *rtisi_tilde_perform(t_int *w) {
 }
 
 
-void rtisi_tilde_recreatestate(t_rtisi_tilde *x, LTFAT_FIRWIN win, ltfat_int blocksize, int overlap, int win_check) {
+void rtisi_tilde_recreatestate(t_rtisi_tilde *x, LTFAT_FIRWIN win, ltfat_int blocksize, int overlap, int max_iter, int win_check) {
 	if (win_check == 1) {
-		if(x->sta_pd && (win != x->window || blocksize != x->blocksize || overlap != x->overlap)) {
+		if(x->sta_pd && (win != x->window || blocksize != x->blocksize || overlap != x->overlap || max_iter != x->max_iter_pd)) {
 			rtisi_done(&(x->sta_pd));
 			x->sta_pd=NULL;
 			post("sta zeroed");
@@ -85,7 +85,7 @@ void rtisi_tilde_recreatestate(t_rtisi_tilde *x, LTFAT_FIRWIN win, ltfat_int blo
 		x->window = win;
 	}
 	else {
-		if(x->sta_pd && (blocksize != x->blocksize || overlap != x->overlap)) {
+		if(x->sta_pd && (blocksize != x->blocksize || overlap != x->overlap || max_iter != x->max_iter_pd)) {
 			rtisi_done(&(x->sta_pd));
 			x->sta_pd=NULL;
 			post("sta zeroed");
@@ -96,8 +96,8 @@ void rtisi_tilde_recreatestate(t_rtisi_tilde *x, LTFAT_FIRWIN win, ltfat_int blo
 		x->blocksize = blocksize;
 
 		x->overlap = overlap;
+		x->max_iter_pd = max_iter;
 		double look_ahead = x->look_ahead_pd;
-		int max_iter = x->max_iter_pd;
 		
 		if (rtisi_init(x->window, x->blocksize, w, blocksize/(x->overlap), x->blocksize, look_ahead, max_iter, &(x->sta_pd))) {
 			pd_error(x, "failed to init state");
@@ -119,7 +119,7 @@ void rtisi_tilde_dsp(t_rtisi_tilde *x, t_signal **sp) {
 		x->window = ltfat_str2firwin(x->window_type_pd->s_name);
 	}
 
-	rtisi_tilde_recreatestate(x, x->window, M, x->overlap, 0);
+	rtisi_tilde_recreatestate(x, x->window, M, x->overlap,x->max_iter_pd, 0);
 	
 	if (x->c != NULL) {
 		freebytes(x->c, M * sizeof *(x->c));
@@ -148,7 +148,16 @@ void rtisi_tilde_look_ahead(t_rtisi_tilde *x, t_floatarg f) {
 
 void rtisi_tilde_overlap(t_rtisi_tilde *x, t_floatarg f) {
 	if ((f > 0.0) && (f <= x->blocksize)) {
-		rtisi_tilde_recreatestate(x, x->window, x->blocksize, f, 0);
+		rtisi_tilde_recreatestate(x, x->window, x->blocksize, f,x->max_iter_pd, 0);
+	}
+	else {
+		pd_error(x, "failed to set overlap, input float has to be  > 0 && <= blocksize, but got: %f", f);
+	}
+}
+
+void rtisi_tilde_max_iter(t_rtisi_tilde *x, t_floatarg f) {
+	if ((f > 0.0) && (f <= x->look_ahead_pd)) {
+		rtisi_tilde_recreatestate(x, x->window, x->blocksize, x->overlap, f, 0);
 	}
 	else {
 		pd_error(x, "failed to set overlap, input float has to be  > 0 && <= blocksize, but got: %f", f);
@@ -164,7 +173,7 @@ void rtisi_tilde_window(t_rtisi_tilde *x, t_symbol* s) {
 		pd_error(x, "failed to set new window type, has to match member of list in the helpfile");
 	}
 		
-	rtisi_tilde_recreatestate(x, new_win, x->blocksize, x->overlap, 1);
+	rtisi_tilde_recreatestate(x, new_win, x->blocksize, x->overlap, x->max_iter_pd, 1);
 }
 
 void *rtisi_tilde_new(t_symbol *s, int argc, t_atom *argv) {
@@ -229,11 +238,12 @@ void rtisi_tilde_setup(void) {
 	class_addmethod(rtisi_tilde_class,
 			(t_method)rtisi_tilde_overlap, gensym("overlap"),
 			A_DEFFLOAT, 0);
-	
+	class_addmethod(rtisi_tilde_class,
+			(t_method)rtisi_tilde_max_iter, gensym("max_iter"),
+			A_DEFFLOAT, 0);
 	class_addmethod(rtisi_tilde_class,
 			(t_method)rtisi_tilde_window, gensym("window"),
 			A_DEFSYMBOL, 0);
-	
 	class_addmethod(rtisi_tilde_class,
 				   (t_method)rtisi_tilde_dsp, gensym("dsp"), A_CANT, 0);
 	CLASS_MAINSIGNALIN(rtisi_tilde_class, t_rtisi_tilde, f);
