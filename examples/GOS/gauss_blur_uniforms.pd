@@ -1,6 +1,6 @@
-#N canvas 1277 160 558 424 12;
+#N canvas 531 324 558 424 12;
 #X obj 91 87 hsl 128 15 0 100 0 1 sigma_x empty Sigma -2 -8 0 10 #c6feff
-#000000 #000000 635 1;
+#000000 #000000 0 1;
 #X obj 90 131 hsl 128 15 1 100 0 1 x_x empty Stepsize -2 -8 0 10 #c6ffc7
 #000000 #000000 128 1;
 #X obj 90 168 hsl 128 15 0 50 0 1 size_x empty Size -2 -8 0 10 #c7c6ff
@@ -12,7 +12,7 @@
 #X floatatom 39 86 5 0 0 0 - - - 0;
 #X floatatom 40 169 5 0 0 0 - - - 0;
 #X obj 86 247 hsl 128 15 0 100 0 1 sigma_y empty Sigma -2 -8 0 10 #00ffed
-#000000 #000000 508 1;
+#000000 #000000 0 1;
 #X obj 85 292 hsl 128 15 1 100 0 1 x_y empty Stepsize -2 -8 0 10 #a3ff9b
 #000000 #000000 1026 1;
 #X obj 85 329 hsl 128 15 0 50 0 1 size_y empty Size -2 -8 0 10 #c3b1ff
@@ -30,8 +30,8 @@
 #X obj 36 377 s repeat;
 #X obj 37 356 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 329 326 hsl 128 15 0 256 0 1 u_y empty offset_u -2 -8 0 10 #00ff04
-#000000 #000000 0 1;
+#X obj 329 326 hsl 128 15 -256 256 0 1 u_y empty offset_u -2 -8 0 10
+#00ff04 #000000 #000000 6350 1;
 #X floatatom 467 324 5 0 0 0 - u_y - 0;
 #X floatatom 279 327 5 0 0 0 - - - 0;
 #X obj 332 165 hsl 128 15 0 256 0 1 u_x empty offset_u -2 -8 0 10 #00ff04
