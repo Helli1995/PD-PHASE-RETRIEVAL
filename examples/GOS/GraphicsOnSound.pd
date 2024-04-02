@@ -1,4 +1,4 @@
-#N canvas 876 100 782 665 12;
+#N canvas 554 64 782 665 12;
 #X declare -lib Gem;
 #X declare -lib rtpghi~;
 #X declare -lib windowing~;
@@ -139,7 +139,7 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X restore 41 231 pd selector;
 #X obj 429 428 vsl 15 70 0 1 0 0 vol empty Master_Vol 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
-#N canvas 477 393 450 300 master 1;
+#N canvas 477 393 450 300 master 0;
 #X obj 42 198 *~;
 #X obj 44 266 dac~;
 #X obj 27 31 catch~ sig;
@@ -171,12 +171,12 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X connect 12 0 13 0;
 #X restore 424 542 pd master;
 #X obj 34 519 hsl 128 15 -3.99 3.99 0 1 read_pos initial_position Readout_Position
--2 -8 0 10 #fcfcfc #000000 #000000 6350 1;
+-2 -8 0 10 #fcfcfc #000000 #000000 1900 1;
 #X obj 342 55 tgl 20 0 on empty DSP-START 0 -10 0 12 #fcfcfc #000000
 #000000 0 1;
 #X msg 342 78 \; pd dsp \$1;
 #X obj 39 31 declare -lib Gem;
-#N canvas 243 600 624 319 audio 1;
+#N canvas 243 586 624 319 audio 1;
 #X obj 131 57 tgl 20 0 empty empty empty 0 -10 0 12 #fcfcfc #000000
 #000000 0 1;
 #N canvas 311 459 404 419 audioplayback 0;
@@ -206,6 +206,7 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X obj 79 27 inlet;
 #X obj 193 27 inlet~ audio_in;
 #X obj 217 180 env~;
+#X floatatom 230 222 5 0 0 0 - - - 0;
 #X connect 0 0 1 1;
 #X connect 1 0 5 0;
 #X connect 2 0 1 0;
@@ -214,13 +215,14 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X connect 5 0 8 0;
 #X connect 6 0 5 1;
 #X connect 7 0 5 0;
+#X connect 8 0 9 0;
 #X restore 419 251 pd audio;
 #X f 11;
 #X obj 409 209 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X obj 459 170 tgl 15 0 empty empty Play 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 430 177 vsl 15 50 0 10 0 0 empty empty In-Vol 0 -9 0 10 #fcfcfc
+#X obj 430 177 vsl 15 50 0 1 0 0 empty empty In-Vol 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
 #X floatatom 451 480 5 0 0 0 - - - 0;
 #X obj 451 458 r vol;
@@ -678,7 +680,10 @@ by 1000;
 #X msg 204 370 0.001;
 #X msg 389 429 0;
 #X msg 390 457 1;
-#X msg 288 141 2048 256 4, f 17;
+#X obj 546 145 adc~ 1;
+#X msg 288 141 1024 256 4, f 17;
+#X floatatom 43 554 5 0 0 0 - - - 0;
+#X connect 4 0 72 0;
 #X connect 5 0 6 0;
 #X connect 9 0 8 0;
 #X connect 10 0 8 2;
@@ -695,9 +700,10 @@ by 1000;
 #X connect 58 0 14 0;
 #X connect 59 0 25 0;
 #X connect 60 0 21 0;
-#X connect 60 1 70 0;
+#X connect 60 1 71 0;
 #X connect 65 0 25 0;
 #X connect 67 0 49 0;
 #X connect 68 0 2 0;
 #X connect 69 0 2 0;
-#X connect 70 0 58 0;
+#X connect 70 0 8 3;
+#X connect 71 0 58 0;
