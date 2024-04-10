@@ -1,2 +1,7 @@
-# PD-RTPGHI
-Real-Time Phase Gradient Heap Integration Object for Pure Data
+# PD-Phase-Retrieval
+Real-Time-Phase-Gradient-Heap-Integration and RTISI-LA Objects, implementing two
+different algorithms for realtime phase reconstruction, based on the c-library 
+libphaseret.
+
+Installation Guide:
+

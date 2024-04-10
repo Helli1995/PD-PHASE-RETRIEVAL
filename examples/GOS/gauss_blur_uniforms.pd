@@ -1,8 +1,8 @@
 #N canvas 531 324 558 424 12;
 #X obj 91 87 hsl 128 15 0 100 0 1 sigma_x empty Sigma -2 -8 0 10 #c6feff
-#000000 #000000 0 1;
+#000000 #000000 1778 1;
 #X obj 90 131 hsl 128 15 1 100 0 1 x_x empty Stepsize -2 -8 0 10 #c6ffc7
-#000000 #000000 128 1;
+#000000 #000000 257 1;
 #X obj 90 168 hsl 128 15 0 50 0 1 size_x empty Size -2 -8 0 10 #c7c6ff
 #000000 #000000 2032 1;
 #X floatatom 228 83 5 0 0 0 - sigma_x - 0;
@@ -14,14 +14,14 @@
 #X obj 86 247 hsl 128 15 0 100 0 1 sigma_y empty Sigma -2 -8 0 10 #00ffed
 #000000 #000000 0 1;
 #X obj 85 292 hsl 128 15 1 100 0 1 x_y empty Stepsize -2 -8 0 10 #a3ff9b
-#000000 #000000 1026 1;
+#000000 #000000 385 1;
 #X obj 85 329 hsl 128 15 0 50 0 1 size_y empty Size -2 -8 0 10 #c3b1ff
-#000000 #000000 508 1;
+#000000 #000000 762 1;
 #X floatatom 223 244 5 0 0 0 - sigma_y - 0;
 #X floatatom 224 289 5 0 0 0 - x_y - 0;
 #X floatatom 223 327 5 0 0 0 - size_y - 0;
 #X floatatom 35 289 5 0 0 0 - - - 0;
-#X floatatom 35 247 5 0 0 0 - - - 0;
+#X floatatom 35 241 5 0 0 0 - - - 0;
 #X floatatom 35 330 5 0 0 0 - - - 0;
 #X text 77 211 Gaussian Blur Kernel y-Direction;
 #X text 82 50 Gaussian Blur Kernel x-Direction;
