@@ -46,7 +46,7 @@ void main() {
 		u_ = u_y;
 	}
 	if ((sigma <= 0.0) || (x < 1.0) || (size <= 0.0) || (size > texSize[0]) || (size > texSize[1])) {
-		gl_FragColor = texture2D(MyTex, uv);
+		gl_FragColor = texture2D(MyTex, uv+u_);
 	}
 	else {
 		for (float i = 0.0; i < i_max; i+=stepsize) {
