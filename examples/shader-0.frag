@@ -1,24 +1,20 @@
 //inspired by Ville-Veikko Urrila
 // https://blog.innogames.com/shader-exploration-the-art-of-blurring/
 
-
 const float M_Pi = 3.1415926535897932384626433832795;
 uniform sampler2D MyTex;
 uniform float dimen_1;
 uniform float dimen_2;
-
 uniform float sigma;
 uniform float x;
 uniform float size;
 uniform float u;
-
 uniform float direc;
 
 vec2 texSize = vec2(dimen_1, dimen_2);
 vec2 uv = gl_FragCoord.xy / texSize;
 vec4 color = vec4(0.0);
 vec2 blur_dir;
-
 
 float normal_fac = 1.0/(pow(2.0 * M_Pi, 0.5) * sigma) * x;
 float e_kernel = (2.0*pow(sigma, 2.0));
@@ -46,7 +42,7 @@ void main() {
 		u_ = u_y;
 	}
 	if ((sigma <= 0.0) || (x < 1.0) || (size <= 0.0) || (size > texSize[0]) || (size > texSize[1])) {
-		gl_FragColor = texture2D(MyTex, uv);
+		gl_FragColor = texture2D(MyTex, uv+u_);
 	}
 	else {
 		for (float i = 0.0; i < i_max; i+=stepsize) {
@@ -60,7 +56,3 @@ void main() {
 		gl_FragColor = color/(kernel_sum*2.0);
 	}
 }
-
-
-
-

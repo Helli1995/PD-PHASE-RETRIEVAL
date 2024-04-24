@@ -28,8 +28,6 @@ void main ()
 			float i_y = i * Y;
 			float i_x = i * X;
 			vec2 reflector = vec2(i_y, i_x);
-			//float norm = sqrt(pow(i_y,2.)+pow(i_x, 2.));
-			//reflector = (1./norm) * reflector;
 			vec2 mirror = reflect(coord - vec2(x_off,y_off), reflector);
 			color_wet += texture2D(MyTex, mirror+(vec2(x_off,y_off)));
 		}
