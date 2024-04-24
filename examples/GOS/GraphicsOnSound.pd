@@ -1,10 +1,10 @@
-#N canvas 648 55 822 665 12;
+#N canvas 14 104 782 665 12;
 #X declare -lib Gem;
+#X declare -lib rtpghi~;
 #X declare -lib windowing~;
-#X declare -lib phase_retrieval~;
 #X obj 39 51 cnv 15 200 200 empty empty Load\\\ Plugin 20 12 0 18 #c6ffc7
 #404040 0;
-#N canvas 236 112 1276 788 selector 0;
+#N canvas 236 93 1276 788 selector 0;
 #X msg 43 83 dir;
 #X obj 42 106 pdcontrol;
 #X msg 45 344 \; pd-edge_detection.pd vis 1;
@@ -98,19 +98,21 @@ open kernel_uniforms.pd \$1 \; pd-kernel_uniforms.pd vis 1;
 #X obj 814 260 r mirror;
 #X msg 805 403 \; pd open mirror.pd \$1 \; pd-mirror.pd vis 0 \; pd
 open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
-#X obj 570 24 loadbang;
-#X obj 570 80 s init_tol;
-#X obj 571 52 1e-07;
 #X msg 852 496 \; pd-mirror.pd menuclose \; pd-mirror_uniforms.pd menuclose
 ;
+#X obj 566 441 del 0.1;
+#X obj 564 465 bang;
+#X obj 568 517 outlet;
 #X connect 0 0 1 0;
 #X connect 1 0 12 0;
 #X connect 3 0 9 0;
 #X connect 3 0 30 0;
+#X connect 3 0 38 0;
 #X connect 4 0 5 0;
 #X connect 5 0 13 0;
 #X connect 7 0 8 0;
 #X connect 7 0 30 0;
+#X connect 7 0 38 0;
 #X connect 8 0 0 0;
 #X connect 8 1 11 0;
 #X connect 9 0 4 0;
@@ -121,23 +123,26 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X connect 16 1 20 0;
 #X connect 17 0 16 0;
 #X connect 17 0 30 0;
+#X connect 17 0 38 0;
 #X connect 21 0 22 0;
 #X connect 22 0 24 0;
 #X connect 23 0 21 0;
 #X connect 23 1 25 0;
 #X connect 27 0 23 0;
 #X connect 27 0 30 0;
+#X connect 27 0 38 0;
 #X connect 28 0 29 0;
 #X connect 31 0 32 0;
 #X connect 32 0 36 0;
 #X connect 33 0 31 0;
-#X connect 33 1 40 0;
+#X connect 33 1 37 0;
 #X connect 35 0 33 0;
 #X connect 35 0 30 0;
-#X connect 37 0 39 0;
-#X connect 39 0 38 0;
-#X restore 41 231 pd selector;
-#X obj 429 428 vsl 15 70 0 1.5 0 0 vol empty Master_Vol 0 -9 0 10 #fcfcfc
+#X connect 35 0 38 0;
+#X connect 38 0 39 0;
+#X connect 39 0 40 0;
+#X restore 290 135 pd selector;
+#X obj 429 428 vsl 15 70 0 1 0 0 vol empty Master_Vol 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
 #N canvas 477 393 450 300 master 0;
 #X obj 42 198 *~;
@@ -154,11 +159,9 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X obj 288 70 vline~;
 #X obj 141 208 env~;
 #X floatatom 150 241 5 0 0 0 - - - 0;
-#X obj 281 265 outlet~;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
 #X connect 0 0 12 0;
-#X connect 0 0 14 0;
 #X connect 2 0 4 0;
 #X connect 3 0 0 1;
 #X connect 4 0 0 0;
@@ -173,12 +176,12 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X connect 12 0 13 0;
 #X restore 424 542 pd master;
 #X obj 34 519 hsl 128 15 -3.99 3.99 0 1 read_pos initial_position Readout_Position
--2 -8 0 10 #fcfcfc #000000 #000000 2346 1;
+-2 -8 0 10 #fcfcfc #000000 #000000 6350 1;
 #X obj 342 55 tgl 20 0 on empty DSP-START 0 -10 0 12 #fcfcfc #000000
 #000000 0 1;
-#X msg 342 78 \; pd dsp \$1;
+#X msg 350 79 \; pd dsp \$1;
 #X obj 39 31 declare -lib Gem;
-#N canvas 243 577 624 319 audio 0;
+#N canvas 243 579 624 319 audio 0;
 #X obj 131 57 tgl 20 0 empty empty empty 0 -10 0 12 #fcfcfc #000000
 #000000 0 1;
 #N canvas 311 459 404 419 audioplayback 0;
@@ -208,7 +211,7 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X obj 79 27 inlet;
 #X obj 193 27 inlet~ audio_in;
 #X obj 217 180 env~;
-#X floatatom 255 218 5 0 0 0 - - - 0;
+#X floatatom 230 222 5 0 0 0 - - - 0;
 #X connect 0 0 1 1;
 #X connect 1 0 5 0;
 #X connect 2 0 1 0;
@@ -218,13 +221,13 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X connect 6 0 5 1;
 #X connect 7 0 5 0;
 #X connect 8 0 9 0;
-#X restore 419 251 pd audio;
+#X restore 438 258 pd audio;
 #X f 11;
-#X obj 409 209 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 438 216 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 459 170 tgl 15 0 empty empty Play 17 7 0 10 #fcfcfc #000000
+#X obj 486 178 tgl 15 0 empty empty Play 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 430 177 vsl 15 50 0 1.5 0 0 empty empty In-Vol 0 -9 0 10 #fcfcfc
+#X obj 464 184 vsl 15 50 0 1 0 0 empty empty In-Vol 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
 #X floatatom 451 480 5 0 0 0 - - - 0;
 #X obj 451 458 r vol;
@@ -236,7 +239,7 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X connect 1 0 3 0;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
-#X restore 282 191 pd dimensions;
+#X restore 290 241 pd dimensions;
 #X obj 249 275 tgl 15 0 freeze empty Freeze\\\ the\\\ Spectrum 17 7
 0 10 #fcfcfc #000000 #000000 0 1;
 #X obj 67 106 tgl 20 0 edge empty Edge_Detection -20 -10 0 10 #bbbbbb
@@ -247,25 +250,25 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #000000 0 1;
 #X obj 68 175 tgl 20 0 kernel empty Draw\\\ Blur\\\ Kernel -20 -10
 0 10 #faff00 #000000 #000000 0 1;
-#X obj 249 44 r all_loaded;
-#X obj 249 100 0;
+#X obj 248 42 r all_loaded;
+#X obj 249 122 0;
 #X obj 38 306 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#N canvas 321 461 510 292 adsr 1;
+#N canvas 43 465 510 292 adsr 0;
 #X obj 45 81 vsl 15 128 0.1 1 0 1 a_l empty Level 0 -9 0 10 #ff8300
 #000000 #000000 12700 1;
 #X obj 170 81 vsl 15 128 0.1 1 0 1 s_l empty Level 0 -9 0 10 #ff8300
-#000000 #000000 7200 0;
+#000000 #000000 8800 0;
 #X obj 406 82 vsl 15 128 0 1 0 0 r_l empty Level 0 -9 0 10 #ff8300
 #000000 #000000 0 0;
 #X obj 79 82 vsl 15 128 0.001 200 0 1 a_t empty Time 0 -9 0 10 #00faff
-#000000 #000000 1100 0;
+#000000 #000000 200 0;
 #X obj 210 79 vsl 15 128 1 600 0 1 s_t empty Time 0 -9 0 10 #00faff
-#000000 #000000 400 0;
+#000000 #000000 1700 0;
 #X obj 441 82 vsl 15 128 1 600 0 1 r_t empty Time 0 -9 0 10 #00faff
-#000000 #000000 3500 0;
+#000000 #000000 1700 0;
 #X obj 298 83 vsl 15 128 1 200 0 1 r_d empty Time 0 -9 0 10 #c6ffc7
-#000000 #000000 0 0;
+#000000 #000000 300 0;
 #X text 46 46 Attack;
 #X text 167 45 Decay;
 #X text 403 42 Release;
@@ -651,9 +654,10 @@ open mirror_uniforms.pd \$1 \; pd-mirror_uniforms.pd vis 1;
 #X obj 250 430 tgl 15 0 sixteen empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X obj 33 371 s division;
-#X text 288 118 Y-X-Dimension;
+#X text 324 172 Y-X-Dimension;
 #X text 22 199 Select an effect/close the effect;
 #X text 24 404 Select steps for the sequencer;
+#X obj 39 12 declare -lib rtpghi~;
 #X floatatom 250 370 10 1e-08 1000 2 Set\ Tolerance - tolerance 0;
 #X text 346 353 of Phase Retrieval Algorithm Value on the left is devided
 by 1000;
@@ -665,10 +669,11 @@ by 1000;
 #000000 0 1;
 #X obj 171 463 tgl 15 0 seq_dir empty Reverse_Audio_Playback 17 7 0
 10 #fcfcfc #000000 #000000 0 1;
-#X obj 267 12 declare -lib windowing~;
+#X obj 205 11 declare -lib windowing~;
 #X msg 33 349 5;
-#X listbox 282 166 20 0 0 0 - - - 0;
-#X obj 249 76 t b b;
+#X listbox 290 216 20 0 0 0 - - - 0;
+#X msg 101 264 170;
+#X obj 249 98 t b b;
 #X text 442 8 1 Select an effect first;
 #X text 442 27 2 Start DSP;
 #X text 442 44 3 Close the effect \, before opening another one;
@@ -680,45 +685,35 @@ by 1000;
 #X msg 204 370 0.001;
 #X msg 389 429 0;
 #X msg 390 457 1;
-#X obj 594 577 writesf~;
-#X msg 601 534 start;
-#X msg 655 534 stop;
-#X msg 550 446 open -bytes 3 gauss_loop.wav;
-#X msg 101 264 130;
-#X obj 556 164 adc~ 1;
-#X floatatom 52 554 5 0 0 0 - - - 0;
-#X msg 36 478 -3.97;
-#X msg 287 141 1024 256 4, f 17;
-#X obj 616 256 lop~ 20;
-#X obj 556 198 lop~ 30;
-#X obj 39 12 declare -lib phase_retrieval~;
-#X connect 3 0 68 0;
-#X connect 4 0 74 0;
+#X obj 546 145 adc~ 1;
+#X floatatom 43 554 5 0 0 0 - - - 0;
+#X obj 546 183 lop~ 30;
+#X obj 309 79 sel 1;
+#X msg 290 191 1024 64 16, f 17;
+#X connect 1 0 74 0;
+#X connect 4 0 71 0;
 #X connect 5 0 6 0;
+#X connect 5 0 73 0;
 #X connect 9 0 8 0;
 #X connect 10 0 8 2;
 #X connect 11 0 8 1;
 #X connect 13 0 12 0;
-#X connect 20 0 58 0;
+#X connect 20 0 60 0;
 #X connect 21 0 15 0;
 #X connect 22 0 26 0;
 #X connect 25 0 26 1;
 #X connect 37 0 27 0;
-#X connect 51 0 26 2;
-#X connect 53 0 52 0;
-#X connect 56 0 44 0;
-#X connect 57 0 14 0;
-#X connect 58 0 21 0;
-#X connect 58 1 76 0;
-#X connect 63 0 25 0;
-#X connect 65 0 48 0;
-#X connect 66 0 2 0;
-#X connect 67 0 2 0;
-#X connect 69 0 68 0;
-#X connect 70 0 68 0;
-#X connect 71 0 68 0;
-#X connect 72 0 25 0;
-#X connect 73 0 78 0;
-#X connect 75 0 4 0;
-#X connect 76 0 57 0;
-#X connect 78 0 8 3;
+#X connect 52 0 26 2;
+#X connect 54 0 53 0;
+#X connect 57 0 44 0;
+#X connect 58 0 14 0;
+#X connect 59 0 25 0;
+#X connect 60 0 21 0;
+#X connect 60 1 74 0;
+#X connect 65 0 25 0;
+#X connect 67 0 49 0;
+#X connect 68 0 2 0;
+#X connect 69 0 2 0;
+#X connect 70 0 72 0;
+#X connect 73 0 60 0;
+#X connect 74 0 58 0;
